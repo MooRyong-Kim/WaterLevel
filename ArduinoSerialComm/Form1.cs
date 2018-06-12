@@ -136,6 +136,14 @@ namespace ArduinoSerialComm
                     }
                 }
 
+/*
+                string str = Encoding.Default.GetString(dgram);
+                tb_Receive.Invoke(new MethodInvoker(delegate()
+                {
+                    tb_Receive.AppendText("- " + str + "\r\n");
+                }));
+*/
+
                 /*
                                 while (true)
                                 {
@@ -168,6 +176,7 @@ namespace ArduinoSerialComm
             }
             if (msgStack.Contains("\0"))
             {
+/*
                 foreach(var it in msgStack.Split('\0'))
                 {
                     if ("" != it)
@@ -175,6 +184,7 @@ namespace ArduinoSerialComm
                         msgStack = msgStack.Replace(it + "\0", "");
                     }
                 }
+*/
             }
 
             if (str != "") return str;
