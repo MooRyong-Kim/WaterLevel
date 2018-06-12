@@ -1,1 +1,5 @@
 /*.suo
+/.vs/ArduinoSerialComm/v15/Server/sqlite3/*.lock
+/.vs/ArduinoSerialComm/v15/Server/sqlite3/*.ide
+/.vs/ArduinoSerialComm/v15/Server/sqlite3/*.ide-shm
+/.vs/ArduinoSerialComm/v15/Server/sqlite3/*.ide-wal

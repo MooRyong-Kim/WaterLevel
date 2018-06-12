@@ -41,7 +41,7 @@ int past_SH = 0;
 unsigned long startT = 0;
 unsigned long endT = 0;
 
-int clock_cnt = 0;
+unsigned int clock_cnt = 0;
 
 enum EEPROMAddr
 {
@@ -80,6 +80,7 @@ void setup() {
 EEPROMAddr eAddr = Unknown;
 String str;
 int cnt = 0;
+int toggle = 0;
 void loop() {
   if(Serial.available())
   {
@@ -177,10 +178,6 @@ void loop() {
 
 //  Serial.print("clock_cnt : ");
 //  Serial.println(clock_cnt);
-  float result_val = ConvertToDepth(clock_cnt);
-  
-  String str = "20180611245959" + WaterLevel_Format(result_val) + "9999";
-  Serial.println(str);
 //  Serial.println(" cm");
 
 //  ConvertToDepth(clock_cnt);
@@ -270,7 +267,7 @@ void loop() {
 /*
 //  address = address + 1;
   if(address == EEPROM.length())
-  {
+  {M
     address = 0;
   }
      delay(200);
@@ -281,15 +278,35 @@ void loop() {
   {
     outSig = !outSig;
 
+     digitalWrite(13, outSig);
     digitalWrite(OUT_SIGNAL, outSig);
     LastT = nowT;
+    if(outSig == 0)
+    {
+    float result_val = ConvertToDepth(clock_cnt);
+  
+    String str = "20180611245959" + WaterLevel_Format(result_val) + "9999";
+    Serial.println(str);
 //    Serial.println("set signal1");
+//      Serial.println(clock_cnt);
+    }
   }  
+  toggle = (toggle+1) % 10000;
+  if(toggle<5000 ) {
+    //digitalWrite(13, 0);
+  
+  }
+  else {
+   // digitalWrite(13, 1);
+    
+  }
 }
 
 void lowUp() {
 //  Serial.println("Low RISING");
 //  startT = micros();
+//  Serial.println("Low Signal Capture");
+//  digitalWrite(13, 1);
   initTimer();
 }
 
@@ -305,6 +322,7 @@ void highUp() {
 }
 
 void initTimer(void) {
+//  Serial.println("Timer set");
 
   // Input Capture setup
   // ICNC1: Enable Input Capture Noise Canceler
@@ -319,7 +337,7 @@ void initTimer(void) {
   // ICIE1: Input capture
   // TOIE1: Timer1 overflow
   TIFR1 = (1<<ICF1) | (1<<TOV1);        // clear pending
-  TIMSK1 = (1<<ICIE1) | (1<<TOIE1); // and enable
+  TIMSK1 = (1<<ICIE1) | (0<<TOIE1); // and enable
 
   pinMode(8, INPUT);
 }
@@ -334,6 +352,7 @@ ISR(TIMER1_CAPT_vect) {
   clock_cnt += timevalue.byte[0];
 //  Serial.println(ConvertToCapacity(clock_cnt));
 //  Serial.println(ConvertToDepth(clock_cnt));
+//  Serial.println("High Signal Capture");
 
 /*
   Serial.print("High : ");
@@ -358,9 +377,13 @@ ISR(TIMER1_CAPT_vect) {
 //  Serial.println();
   
   TIFR1 |= (1<<ICF1);
-  TIMSK1 = (0<<ICIE1) | (0<<TOIE1); // and enable
+//  TIMSK1 = (0<<ICIE1) | (0<<TOIE1); // and enable
+  TIMSK1 = (0<<ICIE1); // and enable
+//  digitalWrite(13, 0);
 }
 
+
+  
 String WaterLevel_Format(float wl)
 {
   String str = "";
