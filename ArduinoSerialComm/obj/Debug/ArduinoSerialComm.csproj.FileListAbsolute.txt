@@ -129,3 +129,13 @@ C:\Users\owner\Desktop\아두이노 프로젝트\ArduinoSerialComm\ArduinoSerial
 C:\Users\owner\Desktop\아두이노 프로젝트\ArduinoSerialComm\ArduinoSerialComm\bin\Debug\ru\DevExpress.Office.v16.1.Core.resources.dll
 C:\Users\owner\Desktop\아두이노 프로젝트\ArduinoSerialComm\ArduinoSerialComm\obj\Debug\ArduinoSerialComm.csproj.CoreCompileInputs.cache
 C:\Users\owner\Desktop\아두이노 프로젝트\ArduinoSerialComm\ArduinoSerialComm\obj\Debug\ArduinoSerialComm.csproj.CopyComplete
+C:\Users\Dawn\Desktop\WaterLevel\ArduinoSerialComm\bin\Debug\ArduinoSerialComm.exe.config
+C:\Users\Dawn\Desktop\WaterLevel\ArduinoSerialComm\obj\Debug\ArduinoSerialComm.exe
+C:\Users\Dawn\Desktop\WaterLevel\ArduinoSerialComm\obj\Debug\ArduinoSerialComm.pdb
+C:\Users\Dawn\Desktop\WaterLevel\ArduinoSerialComm\bin\Debug\ArduinoSerialComm.exe
+C:\Users\Dawn\Desktop\WaterLevel\ArduinoSerialComm\bin\Debug\ArduinoSerialComm.pdb
+C:\Users\Dawn\Desktop\WaterLevel\ArduinoSerialComm\obj\Debug\ArduinoSerialComm.csprojResolveAssemblyReference.cache
+C:\Users\Dawn\Desktop\WaterLevel\ArduinoSerialComm\obj\Debug\ArduinoSerialComm.Form1.resources
+C:\Users\Dawn\Desktop\WaterLevel\ArduinoSerialComm\obj\Debug\ArduinoSerialComm.Properties.Resources.resources
+C:\Users\Dawn\Desktop\WaterLevel\ArduinoSerialComm\obj\Debug\ArduinoSerialComm.csproj.GenerateResource.Cache
+C:\Users\Dawn\Desktop\WaterLevel\ArduinoSerialComm\obj\Debug\ArduinoSerialComm.exe.licenses

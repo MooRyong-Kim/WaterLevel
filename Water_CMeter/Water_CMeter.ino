@@ -34,7 +34,7 @@ byte value;
 
 // Water Measurement
 unsigned long LastT = 0;
-unsigned long Cycle = 250000;
+unsigned long Cycle = 500000;
 int outSig = 0;
 int past_SL = 0;
 int past_SH = 0;
@@ -89,13 +89,13 @@ void loop() {
     switch(ch)
     {
       case 'L':
-        str = "Low Value ";
-        Serial.println("Read or Write? : ");
+        str = "[Low Value ";
+        Serial.println("[Read or Write? : ]");
         eAddr = LH;
         break;
       case 'H':
-        str = "High Value ";
-        Serial.println("Read or Write? : ");
+        str = "[High Value ";
+        Serial.println("[Read or Write? : ]");
         eAddr = HH;
         break;
       case 'W':
@@ -103,9 +103,9 @@ void loop() {
         EEPROM.write(eAddr + 1, int(timevalue.byte[0]));
         temp_val = Converti8To16(int(timevalue.byte[1]), int(timevalue.byte[0]));
         
-        str += "Write : " + String(temp_val);
+        str += "[Write : " + String(temp_val) + "]";
         Serial.println(str);
-        Serial.println("Please Input Depth : ");
+        Serial.println("[Please Input Depth : ]");
         
         while(!Serial.available())
         {
@@ -118,12 +118,12 @@ void loop() {
           if(temp_str.toInt() != 0)
           {
             EEPROM.write(eAddr + 2, temp_int);
-            Serial.print("Input Depth is ");
-            Serial.println(temp_int);
+            String str = "[Input Depth is " + String(temp_int) + "]";
+            Serial.println(str);
           }
           else
           {
-            Serial.print("Input Depth is wrong");
+            Serial.print("[Input Depth is wrong]");
           }
         }
         
@@ -133,15 +133,15 @@ void loop() {
       case 'R':
         temp_val = Converti8To16(EEPROM.read(eAddr), EEPROM.read(eAddr + 1));
         
-        str += "Read : " + String(temp_val);
+        str += "Read : " + String(temp_val) + " | Depth : " + EEPROM.read(eAddr + 2) + "]";
         Serial.println(str);
-        Serial.println(EEPROM.read(eAddr + 2));
+//        Serial.println(EEPROM.read(eAddr + 2));
         str = "";
         eAddr = Unknown;
         break;
       case 'Z':
-        str = "Zero Value ";
-        Serial.println("Read/Write or Clear? : ");
+        str = "[Zero Value ";
+        Serial.println("[Read/Write or Clear? : ]");
         eAddr = ZH;
         break;
       case 'C':
@@ -150,21 +150,21 @@ void loop() {
         
         {
           float result_val = ConvertToDepth(clock_cnt);
-          Serial.print("clock_cnt : ");
-          Serial.println(clock_cnt);
-          Serial.print("result : ");
-          Serial.print(result_val);
-          Serial.println(" cm");
+//          Serial.print("clock_cnt : ");
+//          Serial.println(clock_cnt);
+//          Serial.print("result : ");
+//          Serial.print(result_val);
+//          Serial.println(" cm");
         }
 
-        str += "Clear";
-        Serial.println(clock_cnt);
-        Serial.println(str);
+        str += "Clear]";
+//        Serial.println(clock_cnt);
+//        Serial.println(str);
         eAddr = Unknown;
         str = "";
         break;
       default:
-        str = "Wrong Input";
+        str = "[Wrong Input]";
         str = "";
         break;
     }
@@ -285,7 +285,7 @@ void loop() {
     {
     float result_val = ConvertToDepth(clock_cnt);
   
-    String str = "20180611245959" + WaterLevel_Format(result_val) + "9999";
+    String str = "20180611245959" + WaterLevel_Format(result_val) + "9999\r\nclock_cnt : " + String(clock_cnt);
     Serial.println(str);
 //    Serial.println("set signal1");
 //      Serial.println(clock_cnt);

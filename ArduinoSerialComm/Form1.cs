@@ -134,6 +134,13 @@ namespace ArduinoSerialComm
                             tb_Receive.AppendText("- " + ds.FullData + "\r\n");
                         }));
                     }
+                    else
+                    {
+                        tb_Receive.Invoke(new MethodInvoker(delegate()
+                        {
+                            tb_Receive.AppendText(str + "\r\n");
+                        }));
+                    }
                 }
 
 /*
@@ -160,21 +167,30 @@ namespace ArduinoSerialComm
                                 }
                 */
 
-                Thread.Sleep(250);
+//                 Thread.Sleep(250);
             }
         }
 
         private string check_String()
         {
             string str = "";
-            if (msgStack.Contains("\r"))
+            Regex rg = new Regex("\\[.*\\]");
+            Match m = rg.Match(msgStack);
+
+            if (m.Success)
+            {
+                Group g = m.Groups[0];
+                msgStack = msgStack.Replace(g.ToString(), "");
+                str = g.ToString();
+            }
+            else if (msgStack.Contains("\r"))
             {
                 msgStack = msgStack.Replace("\n", "");
 
                 str = msgStack.Split('\r')[0];
                 msgStack = msgStack.Replace(str + "\r", "");
             }
-            if (msgStack.Contains("\0"))
+            else if (msgStack.Contains("\0"))
             {
 /*
                 foreach(var it in msgStack.Split('\0'))
@@ -186,6 +202,7 @@ namespace ArduinoSerialComm
                 }
 */
             }
+
 
             if (str != "") return str;
             else return "";
@@ -251,7 +268,7 @@ namespace ArduinoSerialComm
 
         private void btn_Send_Click(object sender, EventArgs e)
         {
-            byte[] dgram = Encoding.UTF8.GetBytes(tb_Receive.Text);
+            byte[] dgram = Encoding.UTF8.GetBytes(tb_Send.Text);
             srv.Send(dgram, dgram.Length, remoteEP);
         }
     }
