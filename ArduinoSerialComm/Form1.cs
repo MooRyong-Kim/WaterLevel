@@ -123,26 +123,7 @@ namespace ArduinoSerialComm
 
                 //if (DataSet.TryParse(Encoding.Default.GetString(dgram), out ds))
                 msgStack += Encoding.Default.GetString(dgram);
-                string str = check_String();
-                if ("" != str)
-                {
-                    if (DataSet.TryParse(str, out ds))
-                    {
-                        tb_Receive.Invoke(new MethodInvoker(delegate ()
-                        {
-                            graph_Data.Add(new Record(cnt++, "1", ds.WLev));
-                            tb_Receive.AppendText("- " + ds.FullData + "\r\n");
-                        }));
-                    }
-                    else
-                    {
-                        tb_Receive.Invoke(new MethodInvoker(delegate()
-                        {
-                            tb_Receive.AppendText(str + "\r\n");
-                        }));
-                    }
-                }
-
+                check_String();
 /*
                 string str = Encoding.Default.GetString(dgram);
                 tb_Receive.Invoke(new MethodInvoker(delegate()
@@ -171,42 +152,61 @@ namespace ArduinoSerialComm
             }
         }
 
-        private string check_String()
+        private void check_String()
         {
-            string str = "";
-            Regex rg = new Regex("\\[.*\\]");
-            Match m = rg.Match(msgStack);
+            while(true)
+            {
+                string str = "";
+                Regex rg = new Regex("\\[.*\\]");
+                Match m = rg.Match(msgStack);
 
-            if (m.Success)
-            {
-                Group g = m.Groups[0];
-                msgStack = msgStack.Replace(g.ToString(), "");
-                str = g.ToString();
-            }
-            else if (msgStack.Contains("\r"))
-            {
-                msgStack = msgStack.Replace("\n", "");
-
-                str = msgStack.Split('\r')[0];
-                msgStack = msgStack.Replace(str + "\r", "");
-            }
-            else if (msgStack.Contains("\0"))
-            {
-/*
-                foreach(var it in msgStack.Split('\0'))
+                if (m.Success)
                 {
-                    if ("" != it)
+                    Group g = m.Groups[0];
+                    msgStack = msgStack.Replace(g.ToString(), "");
+                    str = g.ToString();
+                }
+                else if (msgStack.Contains("\r"))
+                {
+                    msgStack = msgStack.Replace("\n", "");
+
+                    str = msgStack.Split('\r')[0];
+                    msgStack = msgStack.Replace(str + "\r", "");
+                }
+                else if (msgStack.Contains("\0"))
+                {
+                    /*
+                                    foreach(var it in msgStack.Split('\0'))
+                                    {
+                                        if ("" != it)
+                                        {
+                                            msgStack = msgStack.Replace(it + "\0", "");
+                                        }
+                                    }
+                    */
+                }
+                else return;
+
+                if ("" != str)
+                {
+                    if (DataSet.TryParse(str, out ds))
                     {
-                        msgStack = msgStack.Replace(it + "\0", "");
+                        tb_Receive.Invoke(new MethodInvoker(delegate()
+                        {
+                            graph_Data.Add(new Record(cnt++, "1", ds.WLev));
+                            tb_Receive.AppendText("- " + ds.FullData + "\r\n");
+                        }));
+                    }
+                    else
+                    {
+                        tb_Receive.Invoke(new MethodInvoker(delegate()
+                        {
+                            tb_Receive.AppendText(str + "\r\n");
+                        }));
                     }
                 }
-*/
             }
-
-
-            if (str != "") return str;
-            else return "";
-        }
+       }
 
         private void btn_Click(object sender, EventArgs e)
         {
