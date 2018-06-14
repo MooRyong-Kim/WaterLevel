@@ -79,14 +79,102 @@ void setup() {
 
 EEPROMAddr eAddr = Unknown;
 String str;
-int cnt = 0;
+bool mloof_flag = false;
 void loop() {
+  DataManagement();
+
+  unsigned long nowT = micros();
+  if ((nowT - LastT) > Cycle)
+  {
+    outSig = !outSig;
+
+    digitalWrite(13, outSig);
+    digitalWrite(OUT_SIGNAL, outSig);
+    LastT = nowT;
+    if(outSig == 0)
+    {
+    float result_val = ConvertToDepth(clock_cnt);
+  
+    String str = "20180611245959" + WaterLevel_Format(result_val) + "9999\r\nclock_cnt : " + String(clock_cnt);\
+    if(!mloof_flag)
+    {
+      Serial.println(str);
+    }
+//      Serial.println(clock_cnt);
+    }
+  }  
+}
+
+void lowUp() {
+//  Serial.println("Low RISING");
+//  digitalWrite(13, 1);
+  initTimer();
+}
+
+void highUp() {
+//  Serial.println("High RISING");
+  endT = micros() - startT;
+  double Capacitance = 0;
+  Capacitance = endT * 1000 / 390.0;
+  startT = 0;
+  endT = 0;
+}
+
+void initTimer(void) {
+//  Serial.println("Timer set");
+
+  // Input Capture setup
+  // ICNC1: Enable Input Capture Noise Canceler
+  // ICES1: =1 for trigger on rising edge
+  // CS10: =1 set prescaler to 1x system clock (F_CPU)
+  TCCR1A = 0;
+  TCCR1B = (0<<ICNC1) | (1<<ICES1) | (1<<CS10);
+  TCCR1C = 0;
+  TCNT1 = 0;
+  
+  // Interrupt setup
+  // ICIE1: Input capture
+  // TOIE1: Timer1 overflow
+  TIFR1 = (1<<ICF1) | (1<<TOV1);        // clear pending
+  TIMSK1 = (1<<ICIE1) | (0<<TOIE1); // and enable
+
+  pinMode(8, INPUT);
+}
+
+ISR(TIMER1_CAPT_vect) {
+  clock_cnt = 0;
+
+  timevalue.byte[0] = ICR1L;        // grab captured timer value
+  timevalue.byte[1] = ICR1H;        // grab captured timer value
+
+  clock_cnt = timevalue.byte[1] << 8;
+  clock_cnt += timevalue.byte[0];
+
+//  Serial.println(timevalue.byte[1]);
+//  Serial.println(timevalue.byte[0]);
+//  Serial.println();
+  
+  TIFR1 |= (1<<ICF1);
+//  TIMSK1 = (0<<ICIE1) | (0<<TOIE1); // and enable
+  TIMSK1 = (0<<ICIE1); // and enable
+//  digitalWrite(13, 0);
+}
+
+void DataManagement()
+{
   if(Serial.available())
   {
     char ch = toupper(Serial.read());
     int temp_val = 0;
     switch(ch)
     {
+      case 'S':
+        mloof_flag = true;
+        Serial.println("[Loof Stop Water Level High Low Data Management Mode\r\nLOW : L\r\nHIGH : H\r\nRead : R\r\nWrite : W\r\nRestart(Go) : G]");
+        break;
+      case 'G':
+        mloof_flag = false;
+        break;
       case 'L':
         str = "[Low Value ";
         Serial.println("[Read or Write? : ]");
@@ -174,83 +262,8 @@ void loop() {
 //      Serial.println(" Finish");
 //      Serial.print("Input Depth : ");
   }
-
-  unsigned long nowT = micros();
-  if ((nowT - LastT) > Cycle)
-  {
-    outSig = !outSig;
-
-    digitalWrite(13, outSig);
-    digitalWrite(OUT_SIGNAL, outSig);
-    LastT = nowT;
-    if(outSig == 0)
-    {
-    float result_val = ConvertToDepth(clock_cnt);
-  
-    String str = "20180611245959" + WaterLevel_Format(result_val) + "9999\r\nclock_cnt : " + String(clock_cnt);
-    Serial.println(str);
-//      Serial.println(clock_cnt);
-    }
-  }  
 }
 
-void lowUp() {
-//  Serial.println("Low RISING");
-//  digitalWrite(13, 1);
-  initTimer();
-}
-
-void highUp() {
-//  Serial.println("High RISING");
-  endT = micros() - startT;
-  double Capacitance = 0;
-  Capacitance = endT * 1000 / 390.0;
-  startT = 0;
-  endT = 0;
-}
-
-void initTimer(void) {
-//  Serial.println("Timer set");
-
-  // Input Capture setup
-  // ICNC1: Enable Input Capture Noise Canceler
-  // ICES1: =1 for trigger on rising edge
-  // CS10: =1 set prescaler to 1x system clock (F_CPU)
-  TCCR1A = 0;
-  TCCR1B = (0<<ICNC1) | (1<<ICES1) | (1<<CS10);
-  TCCR1C = 0;
-  TCNT1 = 0;
-  
-  // Interrupt setup
-  // ICIE1: Input capture
-  // TOIE1: Timer1 overflow
-  TIFR1 = (1<<ICF1) | (1<<TOV1);        // clear pending
-  TIMSK1 = (1<<ICIE1) | (0<<TOIE1); // and enable
-
-  pinMode(8, INPUT);
-}
-
-ISR(TIMER1_CAPT_vect) {
-  clock_cnt = 0;
-
-  timevalue.byte[0] = ICR1L;        // grab captured timer value
-  timevalue.byte[1] = ICR1H;        // grab captured timer value
-
-  clock_cnt = timevalue.byte[1] << 8;
-  clock_cnt += timevalue.byte[0];
-
-//  Serial.println(timevalue.byte[1]);
-//  Serial.println(timevalue.byte[0]);
-//  Serial.println();
-  
-  TIFR1 |= (1<<ICF1);
-//  TIMSK1 = (0<<ICIE1) | (0<<TOIE1); // and enable
-  TIMSK1 = (0<<ICIE1); // and enable
-//  digitalWrite(13, 0);
-}
-
-
-  
 String WaterLevel_Format(float wl)
 {
   String str = "";

@@ -124,34 +124,10 @@ namespace ArduinoSerialComm
                 //if (DataSet.TryParse(Encoding.Default.GetString(dgram), out ds))
                 msgStack += Encoding.Default.GetString(dgram);
                 check_String();
-/*
-                string str = Encoding.Default.GetString(dgram);
-                tb_Receive.Invoke(new MethodInvoker(delegate()
-                {
-                    tb_Receive.AppendText("- " + str + "\r\n");
-                }));
-*/
-
-                /*
-                                while (true)
-                                {
-                                    dgram = srv.Receive(ref remoteEP);
-
-                                    ds = new DataSet(textBox2.Text);
-
-                                    if ("192.168.0.6:7777" == remoteEP.ToString()) continue;
-                                    string str = Encoding.Default.GetString(dgram);
-
-                                    // (2) 데이타 수신
-                                    Console.WriteLine("[Receive] {0} 로부터 {1} 바이트 수신 " + str, remoteEP.ToString(), dgram.Length);
-                                    break;
-                                }
-                */
-
-//                 Thread.Sleep(250);
             }
         }
 
+        DataSet ds;
         private void check_String()
         {
             while(true)
@@ -172,18 +148,6 @@ namespace ArduinoSerialComm
 
                     str = msgStack.Split('\r')[0];
                     msgStack = msgStack.Replace(str + "\r", "");
-                }
-                else if (msgStack.Contains("\0"))
-                {
-                    /*
-                                    foreach(var it in msgStack.Split('\0'))
-                                    {
-                                        if ("" != it)
-                                        {
-                                            msgStack = msgStack.Replace(it + "\0", "");
-                                        }
-                                    }
-                    */
                 }
                 else return;
 
@@ -245,26 +209,6 @@ namespace ArduinoSerialComm
             tb_Receive.Clear();
         }
 
-        DataSet ds;
-        private void button1_Click(object sender, EventArgs e)
-        {
-//             ds = new DataSet(textBox2.Text);
-
-            if(DataSet.TryParse(textBox2.Text, out ds))
-            {
-                string str = "";
-                str += "Y : " + ds.Y + "\n";
-                str += "M : " + ds.M + "\n";
-                str += "D : " + ds.D + "\n";
-                str += "h : " + ds.h + "\n";
-                str += "m : " + ds.m + "\n";
-                str += "s : " + ds.s + "\n";
-                str += "WLev : " + ds.WLev + "\n";
-                str += "Pos : " + ds.Pos + "\n";
-
-                MessageBox.Show(str);
-            }
-        }
 
         private void btn_Send_Click(object sender, EventArgs e)
         {

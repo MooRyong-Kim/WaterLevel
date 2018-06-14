@@ -43,9 +43,6 @@
             this.btn_Connect = new System.Windows.Forms.Button();
             this.btn_Disconnect = new System.Windows.Forms.Button();
             this.btn_GraphClear = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
-            this.textBox2 = new System.Windows.Forms.TextBox();
-            this.textBox3 = new System.Windows.Forms.TextBox();
             this.btn_Send = new System.Windows.Forms.Button();
             this.tb_Send = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.chartControl1)).BeginInit();
@@ -68,12 +65,12 @@
             this.chartControl1.Size = new System.Drawing.Size(696, 226);
             this.chartControl1.TabIndex = 0;
             // 
-            // textBox1
+            // tb_Receive
             // 
             this.tb_Receive.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tb_Receive.Location = new System.Drawing.Point(0, 0);
             this.tb_Receive.Multiline = true;
-            this.tb_Receive.Name = "textBox1";
+            this.tb_Receive.Name = "tb_Receive";
             this.tb_Receive.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.tb_Receive.Size = new System.Drawing.Size(696, 118);
             this.tb_Receive.TabIndex = 1;
@@ -188,6 +185,7 @@
             this.btn_Connect.TabIndex = 2;
             this.btn_Connect.Text = "Connect";
             this.btn_Connect.UseVisualStyleBackColor = true;
+            this.btn_Connect.Visible = false;
             this.btn_Connect.Click += new System.EventHandler(this.btn_Click);
             // 
             // btn_Disconnect
@@ -198,6 +196,7 @@
             this.btn_Disconnect.TabIndex = 5;
             this.btn_Disconnect.Text = "Disconnect";
             this.btn_Disconnect.UseVisualStyleBackColor = true;
+            this.btn_Disconnect.Visible = false;
             this.btn_Disconnect.Click += new System.EventHandler(this.btn_Click);
             // 
             // btn_GraphClear
@@ -209,31 +208,6 @@
             this.btn_GraphClear.Text = "Graph Clear";
             this.btn_GraphClear.UseVisualStyleBackColor = true;
             this.btn_GraphClear.Click += new System.EventHandler(this.btn_GraphClear_Click);
-            // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(163, 399);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 11;
-            this.button1.Text = "button1";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
-            // 
-            // textBox2
-            // 
-            this.textBox2.Location = new System.Drawing.Point(4, 401);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(153, 21);
-            this.textBox2.TabIndex = 15;
-            this.textBox2.Text = "20180428141531088.889999";
-            // 
-            // textBox3
-            // 
-            this.textBox3.Location = new System.Drawing.Point(4, 418);
-            this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(153, 21);
-            this.textBox3.TabIndex = 18;
             // 
             // btn_Send
             // 
@@ -247,20 +221,17 @@
             // 
             // tb_Send
             // 
-            this.tb_Send.Location = new System.Drawing.Point(224, 413);
+            this.tb_Send.Location = new System.Drawing.Point(4, 413);
             this.tb_Send.Name = "tb_Send";
-            this.tb_Send.Size = new System.Drawing.Size(88, 21);
+            this.tb_Send.Size = new System.Drawing.Size(308, 21);
             this.tb_Send.TabIndex = 21;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(704, 441);
+            this.ClientSize = new System.Drawing.Size(704, 447);
             this.Controls.Add(this.tb_Send);
-            this.Controls.Add(this.textBox3);
-            this.Controls.Add(this.textBox2);
-            this.Controls.Add(this.button1);
             this.Controls.Add(this.btn_GraphClear);
             this.Controls.Add(this.btn_Disconnect);
             this.Controls.Add(this.btn_Send);
@@ -299,9 +270,6 @@
         private System.Windows.Forms.Button btn_Connect;
         private System.Windows.Forms.Button btn_Disconnect;
         private System.Windows.Forms.Button btn_GraphClear;
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.TextBox textBox2;
-        private System.Windows.Forms.TextBox textBox3;
         private System.Windows.Forms.Button btn_Send;
         private System.Windows.Forms.TextBox tb_Send;
     }
