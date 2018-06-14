@@ -23,6 +23,15 @@ namespace ArduinoSerialComm
         {
             InitializeComponent();
             Load += Form1_Load;
+            graph_Data.ListChanged += Graph_Data_ListChanged;
+        }
+
+        private void Graph_Data_ListChanged(object sender, ListChangedEventArgs e)
+        {
+            if(50 < graph_Data.Count)
+            {
+                graph_Data.RemoveAt(0);
+            }
         }
 
         BindingList<Record> graph_Data = new BindingList<Record>();
