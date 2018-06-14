@@ -80,7 +80,6 @@ void setup() {
 EEPROMAddr eAddr = Unknown;
 String str;
 int cnt = 0;
-int toggle = 0;
 void loop() {
   if(Serial.available())
   {
@@ -176,109 +175,12 @@ void loop() {
 //      Serial.print("Input Depth : ");
   }
 
-//  Serial.print("clock_cnt : ");
-//  Serial.println(clock_cnt);
-//  Serial.println(" cm");
-
-//  ConvertToDepth(clock_cnt);
-
-//  EEPROM.write(address, 34);
-//  value = EEPROM.read(address);
-//  ZigBeeSerial.println(value);
-
-/*
-  int WLevel = 0;
-  int btn = digitalRead(BUTTON);
-  
-  if (btn != lastButtonState)
-  {
-    // reset the debouncing timer
-    lastDebounceTime = millis();
-  }
-//*/
-/*
-  if ((millis() - lastDebounceTime) > debounceDelay)
-  {
-    // whatever the reading is at, it's been there for longer than the debounce
-    // delay, so take it as the actual current state:
-
-    // if the button state has changed:
-    if (btn != buttonState)
-    {
-      buttonState = btn;
-
-      // only toggle the LED if the new button state is HIGH
-      if (buttonState == HIGH)
-      {
-        ZigBeeSerial.print("calSignal : ");
-        ZigBeeSerial.println(calSignal);
-        switch(calSignal)
-        {
-          case 0:
-            // calibration ready
-            calSignal = 1;
-//            if(ZigBeeSerial.available())
-            {
-    //          if(ZigBeeSerial.read() == "Ready")
-              {
-                ZigBeeSerial.println("- Calibration Ready! -");
-              }
-            }
-            break;
-          case 1:
-            // High Level Set
-//            if(ZigBeeSerial.available())
-            {
-              ZigBeeSerial.println("HIGH");
-//              WLevel = ZigBeeSerial.read();
-//              ZigBeeSerial.print("- hLevel = ");
-//              ZigBeeSerial.println(WLevel);
-//              EEPROM.write(HIGH_WLEVEL, WLevel);
-            }
-            calSignal = 2;
-            break;
-          case 2:
-            // Low Level Set
-//            if(ZigBeeSerial.available())
-            {
-              ZigBeeSerial.println("LOW");
-//              WLevel = ZigBeeSerial.read();
-//              ZigBeeSerial.print("- lLevel = ");
-//              ZigBeeSerial.println(WLevel);
-//              EEPROM.write(LOW_WLEVEL, WLevel);
-            }
-            calSignal = 0;
-            break;
-        }
-        ZigBeeSerial.print("Button : ");
-        ZigBeeSerial.println(btn);
-      }
-    }
-  }
-  
-  lastButtonState = btn;
-//*/  
-/*
-  ZigBeeSerial.print("address : ");
-  ZigBeeSerial.print(address);
-  ZigBeeSerial.print(", value : ");
-  ZigBeeSerial.println(value);
-*/  
-/*
-//  address = address + 1;
-  if(address == EEPROM.length())
-  {M
-    address = 0;
-  }
-     delay(200);
-//*/  
-
   unsigned long nowT = micros();
   if ((nowT - LastT) > Cycle)
   {
     outSig = !outSig;
 
-     digitalWrite(13, outSig);
+    digitalWrite(13, outSig);
     digitalWrite(OUT_SIGNAL, outSig);
     LastT = nowT;
     if(outSig == 0)
@@ -287,25 +189,13 @@ void loop() {
   
     String str = "20180611245959" + WaterLevel_Format(result_val) + "9999\r\nclock_cnt : " + String(clock_cnt);
     Serial.println(str);
-//    Serial.println("set signal1");
 //      Serial.println(clock_cnt);
     }
   }  
-  toggle = (toggle+1) % 10000;
-  if(toggle<5000 ) {
-    //digitalWrite(13, 0);
-  
-  }
-  else {
-   // digitalWrite(13, 1);
-    
-  }
 }
 
 void lowUp() {
 //  Serial.println("Low RISING");
-//  startT = micros();
-//  Serial.println("Low Signal Capture");
 //  digitalWrite(13, 1);
   initTimer();
 }
@@ -315,8 +205,6 @@ void highUp() {
   endT = micros() - startT;
   double Capacitance = 0;
   Capacitance = endT * 1000 / 390.0;
-//  ZigBeeSerial.print("Capacitance : ");
-//  ZigBeeSerial.println(Capacitance);
   startT = 0;
   endT = 0;
 }
@@ -350,28 +238,7 @@ ISR(TIMER1_CAPT_vect) {
 
   clock_cnt = timevalue.byte[1] << 8;
   clock_cnt += timevalue.byte[0];
-//  Serial.println(ConvertToCapacity(clock_cnt));
-//  Serial.println(ConvertToDepth(clock_cnt));
-//  Serial.println("High Signal Capture");
 
-/*
-  Serial.print("High : ");
-  for(int i = 7; i >= 0; i--)
-  {
-    Serial.print(bitRead(timevalue.byte[1], i));
-  }
-  Serial.println();
-  
-  Serial.print("Low : ");
-  for(int i = 7; i >= 0; i--)
-  {
-    Serial.print(bitRead(timevalue.byte[0], i));
-  }
-  Serial.println();
-  Serial.print("Marge : ");
-  Serial.println(temp_test);
-  Serial.println();
-//*/  
 //  Serial.println(timevalue.byte[1]);
 //  Serial.println(timevalue.byte[0]);
 //  Serial.println();
@@ -387,7 +254,11 @@ ISR(TIMER1_CAPT_vect) {
 String WaterLevel_Format(float wl)
 {
   String str = "";
-  if(wl < 100 && wl >= 10)
+  if(wl > 100)
+  {
+    str = "100.00";
+  }
+  else if(wl < 100 && wl >= 10)
   {
     str = "0" + String(roundf(wl*100.0)/100.0);
   }
