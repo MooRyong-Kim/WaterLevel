@@ -40,8 +40,6 @@
             this.dockPanel1_Container = new DevExpress.XtraBars.Docking.ControlContainer();
             this.dockPanel3 = new DevExpress.XtraBars.Docking.DockPanel();
             this.dockPanel3_Container = new DevExpress.XtraBars.Docking.ControlContainer();
-            this.btn_Connect = new System.Windows.Forms.Button();
-            this.btn_Disconnect = new System.Windows.Forms.Button();
             this.btn_GraphClear = new System.Windows.Forms.Button();
             this.btn_Send = new System.Windows.Forms.Button();
             this.tb_Send = new System.Windows.Forms.TextBox();
@@ -177,28 +175,6 @@
             this.dockPanel3_Container.Size = new System.Drawing.Size(696, 118);
             this.dockPanel3_Container.TabIndex = 0;
             // 
-            // btn_Connect
-            // 
-            this.btn_Connect.Location = new System.Drawing.Point(413, 406);
-            this.btn_Connect.Name = "btn_Connect";
-            this.btn_Connect.Size = new System.Drawing.Size(89, 33);
-            this.btn_Connect.TabIndex = 2;
-            this.btn_Connect.Text = "Connect";
-            this.btn_Connect.UseVisualStyleBackColor = true;
-            this.btn_Connect.Visible = false;
-            this.btn_Connect.Click += new System.EventHandler(this.btn_Click);
-            // 
-            // btn_Disconnect
-            // 
-            this.btn_Disconnect.Location = new System.Drawing.Point(508, 406);
-            this.btn_Disconnect.Name = "btn_Disconnect";
-            this.btn_Disconnect.Size = new System.Drawing.Size(89, 33);
-            this.btn_Disconnect.TabIndex = 5;
-            this.btn_Disconnect.Text = "Disconnect";
-            this.btn_Disconnect.UseVisualStyleBackColor = true;
-            this.btn_Disconnect.Visible = false;
-            this.btn_Disconnect.Click += new System.EventHandler(this.btn_Click);
-            // 
             // btn_GraphClear
             // 
             this.btn_GraphClear.Location = new System.Drawing.Point(603, 406);
@@ -233,9 +209,7 @@
             this.ClientSize = new System.Drawing.Size(704, 447);
             this.Controls.Add(this.tb_Send);
             this.Controls.Add(this.btn_GraphClear);
-            this.Controls.Add(this.btn_Disconnect);
             this.Controls.Add(this.btn_Send);
-            this.Controls.Add(this.btn_Connect);
             this.Controls.Add(this.dockPanel3);
             this.Controls.Add(this.dockPanel1);
             this.Name = "Form1";
@@ -267,8 +241,6 @@
         private DevExpress.XtraBars.Docking.ControlContainer dockPanel2_Container;
         private DevExpress.XtraBars.Docking.DockPanel dockPanel4;
         private DevExpress.XtraBars.Docking.ControlContainer dockPanel4_Container;
-        private System.Windows.Forms.Button btn_Connect;
-        private System.Windows.Forms.Button btn_Disconnect;
         private System.Windows.Forms.Button btn_GraphClear;
         private System.Windows.Forms.Button btn_Send;
         private System.Windows.Forms.TextBox tb_Send;
