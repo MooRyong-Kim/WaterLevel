@@ -51,7 +51,7 @@ namespace ArduinoSerialComm
                 {
                     if(it is float)
                     {
-                        tempS += String.Format("{000.00}", it);
+                        tempS += String.Format("{0:000.00}", it);
                     }
                     else
                     {
@@ -66,7 +66,7 @@ namespace ArduinoSerialComm
         private string DateFormat(int num)
         {
             string str = "";
-            if (num < 10)
+            if (num < 10 && num > -1)
             {
                 return str = "0" + num.ToString();
             }
@@ -116,16 +116,27 @@ namespace ArduinoSerialComm
 
             if (DataIdx.WLev != target)
             {
-
                 int tempI = -1;
-                int.TryParse(origin, out tempI);
-                dict_var[target] = tempI;
+                if(int.TryParse(origin, out tempI))
+                {
+                    dict_var[target] = tempI;
+                }
+                else
+                {
+                    throw new System.ArgumentException("Impossible parsing Data");
+                }
             }
             else if (DataIdx.WLev == target)
             {
                 float tempD = -1;
-                float.TryParse(origin, out tempD);
-                dict_var[target] = tempD;
+                if(float.TryParse(origin, out tempD))
+                {
+                    dict_var[target] = tempD;
+                }
+                else
+                {
+                    throw new System.ArgumentException("Impossible parsing Data");
+                }
             }
         }
     }
