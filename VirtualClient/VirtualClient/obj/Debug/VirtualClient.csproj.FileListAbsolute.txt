@@ -1,0 +1,10 @@
+C:\Users\owner\Desktop\아두이노 프로젝트\WaterLevel\VirtualClient\VirtualClient\bin\Debug\VirtualClient.exe.config
+C:\Users\owner\Desktop\아두이노 프로젝트\WaterLevel\VirtualClient\VirtualClient\bin\Debug\VirtualClient.exe
+C:\Users\owner\Desktop\아두이노 프로젝트\WaterLevel\VirtualClient\VirtualClient\bin\Debug\VirtualClient.pdb
+C:\Users\owner\Desktop\아두이노 프로젝트\WaterLevel\VirtualClient\VirtualClient\obj\Debug\VirtualClient.csprojResolveAssemblyReference.cache
+C:\Users\owner\Desktop\아두이노 프로젝트\WaterLevel\VirtualClient\VirtualClient\obj\Debug\VirtualClient.Form1.resources
+C:\Users\owner\Desktop\아두이노 프로젝트\WaterLevel\VirtualClient\VirtualClient\obj\Debug\VirtualClient.Properties.Resources.resources
+C:\Users\owner\Desktop\아두이노 프로젝트\WaterLevel\VirtualClient\VirtualClient\obj\Debug\VirtualClient.csproj.GenerateResource.cache
+C:\Users\owner\Desktop\아두이노 프로젝트\WaterLevel\VirtualClient\VirtualClient\obj\Debug\VirtualClient.csproj.CoreCompileInputs.cache
+C:\Users\owner\Desktop\아두이노 프로젝트\WaterLevel\VirtualClient\VirtualClient\obj\Debug\VirtualClient.exe
+C:\Users\owner\Desktop\아두이노 프로젝트\WaterLevel\VirtualClient\VirtualClient\obj\Debug\VirtualClient.pdb
