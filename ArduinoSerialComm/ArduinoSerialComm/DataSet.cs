@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ArduinoSerialComm
 {
-    class DataSet
+    public class DataSet
     {
         enum DataIdx
         {
@@ -72,12 +72,30 @@ namespace ArduinoSerialComm
                 foreach (var it in dict_var)
                 {
                     if (it.Key == DataIdx.h || it.Key == DataIdx.m || it.Key == DataIdx.s)
+                    //if (it.Key != DataIdx.WLev && it.Key != DataIdx.Pos)
                     {
                         tempS += DateFormat(Convert.ToInt32(it.Value));
                     }
                 }
 
                 return Convert.ToInt64(tempS);
+            }
+        }
+
+        public DateTime TimeStampDT
+        {
+            get
+            {
+                int tempY = Convert.ToInt32(dict_var[DataIdx.Y]);
+                int tempM = Convert.ToInt32(dict_var[DataIdx.M]);
+                int tempD = Convert.ToInt32(dict_var[DataIdx.D]);
+                int temph = Convert.ToInt32(dict_var[DataIdx.h]);
+                int tempm = Convert.ToInt32(dict_var[DataIdx.m]);
+                int temps = Convert.ToInt32(dict_var[DataIdx.s]);
+
+                DateTime tempDT = new DateTime(tempY, tempM, tempD, temph, tempm, temps);
+
+                return tempDT;
             }
         }
 

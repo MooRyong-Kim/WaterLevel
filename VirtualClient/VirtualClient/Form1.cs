@@ -70,6 +70,8 @@ namespace VirtualClient
         {
             if (clientSocket != null)
                 clientSocket.Close();
+            if (td != null)
+                td.Abort();
         }
 
         private void DisplayText(string text)
@@ -105,6 +107,7 @@ namespace VirtualClient
         }
 
         NetworkStream stream;
+        Thread td;
         private void btn_Test_Click(object sender, EventArgs e)
         {
             try
@@ -125,16 +128,17 @@ namespace VirtualClient
 
             }
 
-            Thread td = new Thread(new ThreadStart(td_Test));
+            td = new Thread(new ThreadStart(td_Test));
             td.Start();
         }
 
         private void td_Test()
         {
+            Random rd = new Random();
             stream = clientSocket.GetStream();
             while (true)
             {
-                string str = DateTime.Now.ToString("yyyyMMddHHmmss") + "000.00" + id + "\r\n";
+                string str = DateTime.Now.ToString("yyyyMMddHHmmss") + String.Format("{0:000.00}", rd.Next(0, 100)) + id + "\r\n";
                 byte[] sbuffer = Encoding.ASCII.GetBytes(str);
                 stream.Write(sbuffer, 0, sbuffer.Length);
 

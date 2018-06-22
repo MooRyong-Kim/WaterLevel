@@ -19,7 +19,8 @@ namespace ArduinoSerialComm
 {
     public partial class Form1 : Form
     {
-        Dictionary<string, Tuple<handleClient, BindingList<Record>>> dict_client = new Dictionary<string, Tuple<handleClient, BindingList<Record>>>();
+        //Dictionary<string, Tuple<handleClient, BindingList<Record>>> dict_client = new Dictionary<string, Tuple<handleClient, BindingList<Record>>>();
+        Dictionary<string, BindingList<Record>> dict_client = new Dictionary<string, BindingList<Record>>();
 
         TcpListener server = null;
         TcpClient client = null;
@@ -36,10 +37,14 @@ namespace ArduinoSerialComm
         BindingList<Record> graph_Data = new BindingList<Record>();
         void Form1_Load(object sender, EventArgs e)
         {
-            setSeries("Test Chart", graph_Data);
+            //            setSeries("Test Chart", graph_Data);
 
             //Set the range for Y-Axis
+            chartControl1.Series.Add(new Series());
             XYDiagram diagram = (XYDiagram)chartControl1.Diagram;
+            diagram.AxisX.DateTimeScaleOptions.MeasureUnit = DateTimeMeasureUnit.Second;
+            diagram.AxisX.DateTimeScaleOptions.GridAlignment = DateTimeGridAlignment.Minute;
+            diagram.AxisX.Label.TextPattern = "{A:HH:mm:ss}";
             diagram.EnableAxisXScrolling = true;
             diagram.EnableAxisYScrolling = true;
             diagram.AxisY.WholeRange.Auto = false;
@@ -86,7 +91,7 @@ namespace ArduinoSerialComm
                     handleClient h_client = new handleClient();
                     h_client.OnReceived += new handleClient.MessageDisplayHandler(DisplayText);
                     //h_client.OnCalculated += new handleClient.CalculateClientCounter(CalculateCounter);
-                    h_client.OnConnClient += new handleClient.ConnectClient(MakeClientDictionary);
+                    //h_client.OnConnClient += new handleClient.ConnectClient(MakeClientDictionary);
                     h_client.startClient(client);
 
 
@@ -118,7 +123,7 @@ namespace ArduinoSerialComm
             if(!dict_client.ContainsKey(id))
             {
                 BindingList<Record> bList_Record = new BindingList<Record>();
-                dict_client.Add(id, new Tuple<handleClient, BindingList<Record>>(hClient, bList_Record));
+                //dict_client.Add(id, new Tuple<handleClient, BindingList<Record>>(hClient, bList_Record));
                 setSeries(id, bList_Record);
             }
         }
@@ -129,6 +134,10 @@ namespace ArduinoSerialComm
             Series se = new Series(id, ViewType.Line);
             se.DataSource = bList;
             chartControl1.Series.Add(se);
+
+            // Set the scale type for the series' arguments and values.
+            se.ArgumentScaleType = ScaleType.DateTime;
+            se.ValueScaleType = ScaleType.Numerical;
 
             se.ArgumentDataMember = "TIMESTAMP";
             se.ValueDataMembers.AddRange(new string[] { "DATA" });
@@ -161,7 +170,6 @@ namespace ArduinoSerialComm
                 }
         */
 
-        DataSet ds;
         private void check_String()
         {
             while(true)
@@ -187,19 +195,27 @@ namespace ArduinoSerialComm
 
                 if ("" != str)
                 {
+                    DataSet ds = null;
                     if (DataSet.TryParse(str, out ds))
                     {
                         tb_Receive.Invoke(new MethodInvoker(delegate()
                         {
-                            if(dict_client.ContainsKey(ds.Pos.ToString()))
+                            string id = ds.Pos.ToString();
+                            if (dict_client.ContainsKey(id))
                             {
-                                dict_client[ds.Pos.ToString()].Item2.Add(new Record(ds.TimeStamp, ds.WLev));
-                                if (5 < dict_client[ds.Pos.ToString()].Item2.Count)
+                                dict_client[id].Add(new Record(ds, ds.WLev));
+                                if (50 < dict_client[id].Count)
                                 {
-                                    dict_client[ds.Pos.ToString()].Item2.RemoveAt(0);
+                                    dict_client[id].RemoveAt(0);
                                 }
 
                                 tb_Receive.AppendText("- " + ds.FullData + "\r\n");
+                            }
+                            else
+                            {
+                                BindingList<Record> bList_Record = new BindingList<Record>();
+                                dict_client.Add(id, bList_Record);
+                                setSeries(id, bList_Record);
                             }
                         }));
                     }
@@ -219,7 +235,7 @@ namespace ArduinoSerialComm
             cnt = 0;
             foreach(var it in dict_client.Values)
             {
-                it.Item2.Clear();
+                it.Clear();
             }
             tb_Receive.Clear();
         }
@@ -233,13 +249,13 @@ namespace ArduinoSerialComm
 
     public class Record
     {
-        public Record(long timeStamp, float data)
+        public Record(DataSet ds, float data)
         {
-            TIMESTAMP = timeStamp;
+            TIMESTAMP = ds.TimeStampDT;
             DATA = data;
         }
 
-        public long TIMESTAMP { get; set; }
+        public DateTime TIMESTAMP { get; set; }
         public float DATA { get; set; }
     }
 }
