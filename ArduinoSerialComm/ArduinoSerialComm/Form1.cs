@@ -10,6 +10,7 @@ using System.Windows.Forms;
 
 using System.Threading;
 using DevExpress.XtraCharts;
+using DevExpress.XtraEditors.Controls;
 using System.Text.RegularExpressions;
 using System.Net;
 using System.Net.Sockets;
@@ -22,10 +23,23 @@ namespace ArduinoSerialComm
         //Dictionary<string, Tuple<handleClient, BindingList<Record>>> dict_client = new Dictionary<string, Tuple<handleClient, BindingList<Record>>>();
         Dictionary<string, BindingList<Record>> dict_client = new Dictionary<string, BindingList<Record>>();
 
+        public delegate void MessageSendHandler(string text);
+        public event MessageSendHandler OnSend;
+
         TcpListener server = null;
         TcpClient client = null;
         int cnt = 0;
         string msgStack = "";
+
+        struct controlMSG
+        {
+            public const string Stop = "S\r\n";
+            public const string Go = "G\r\n";
+            public const string LowCal = "L\r\nW\r\n";
+            public const string HighCal = "H\r\nW\r\n";
+            public const string LowInfo = "L\r\nR\r\n";
+            public const string HighInfo = "H\r\nR\r\n";
+        }
 
         public Form1()
         {
@@ -34,26 +48,30 @@ namespace ArduinoSerialComm
             FormClosing += Form1_FormClosing;
         }
 
-        BindingList<Record> graph_Data = new BindingList<Record>();
         void Form1_Load(object sender, EventArgs e)
         {
-            //            setSeries("Test Chart", graph_Data);
-
             //Set the range for Y-Axis
             chartControl1.Series.Add(new Series());
             XYDiagram diagram = (XYDiagram)chartControl1.Diagram;
             diagram.AxisX.DateTimeScaleOptions.MeasureUnit = DateTimeMeasureUnit.Second;
-            diagram.AxisX.DateTimeScaleOptions.GridAlignment = DateTimeGridAlignment.Minute;
+            diagram.AxisX.DateTimeScaleOptions.GridAlignment = DateTimeGridAlignment.Second;
             diagram.AxisX.Label.TextPattern = "{A:HH:mm:ss}";
             diagram.EnableAxisXScrolling = true;
             diagram.EnableAxisYScrolling = true;
             diagram.AxisY.WholeRange.Auto = false;
             diagram.AxisY.WholeRange.SetMinMaxValues(-5, 110);
-            
+
+            rg_ClientLIst.SelectedIndexChanged += Rg_ClientLIst_SelectedIndexChanged;
+                
             // socket start
             Thread t = new Thread(InitSocket);
             t.IsBackground = true;
             t.Start();
+        }
+
+        private void Rg_ClientLIst_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            tb_ReceiveCal.Clear();
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
@@ -120,11 +138,9 @@ namespace ArduinoSerialComm
         }
         private void MakeClientDictionary(string id, handleClient hClient)
         {
-            if(!dict_client.ContainsKey(id))
+            if (!dict_client.ContainsKey(id))
             {
-                BindingList<Record> bList_Record = new BindingList<Record>();
-                //dict_client.Add(id, new Tuple<handleClient, BindingList<Record>>(hClient, bList_Record));
-                setSeries(id, bList_Record);
+                handleClient.dict_hClient.Add(id, hClient);
             }
         }
 
@@ -195,29 +211,34 @@ namespace ArduinoSerialComm
 
                 if ("" != str)
                 {
-                    DataSet ds = null;
-                    if (DataSet.TryParse(str, out ds))
-                    {
-                        tb_Receive.Invoke(new MethodInvoker(delegate()
+                        DataSet ds = null;
+                        if (DataSet.TryParse(str, out ds))
                         {
-                            string id = ds.Pos.ToString();
-                            if (dict_client.ContainsKey(id))
+                            tb_Receive.Invoke(new MethodInvoker(delegate()
                             {
-                                dict_client[id].Add(new Record(ds, ds.WLev));
-                                if (50 < dict_client[id].Count)
+                                string id = ds.Pos.ToString();
+                                if (dict_client.ContainsKey(id))
                                 {
-                                    dict_client[id].RemoveAt(0);
-                                }
+                                    dict_client[id].Add(new Record(ds, ds.WLev));
+                                    if (50 < dict_client[id].Count)
+                                    {
+                                        dict_client[id].RemoveAt(0);
+                                    }
 
-                                tb_Receive.AppendText("- " + ds.FullData + "\r\n");
-                            }
-                            else
-                            {
-                                BindingList<Record> bList_Record = new BindingList<Record>();
-                                dict_client.Add(id, bList_Record);
-                                setSeries(id, bList_Record);
-                            }
-                        }));
+                                    tb_Receive.AppendText("- " + ds.FullData + "\r\n");
+                                }
+                                else
+                                {
+                                    BindingList<Record> bList_Record = new BindingList<Record>();
+                                    dict_client.Add(id, bList_Record);
+                                    setSeries(id, bList_Record);
+
+                                    var rbtn = new RadioGroupItem();
+                                    rbtn.Description = id;
+
+                                    rg_ClientLIst.Properties.Items.Add(rbtn);
+                                }
+                            }));
                     }
                     else
                     {
@@ -240,10 +261,45 @@ namespace ArduinoSerialComm
             tb_Receive.Clear();
         }
 
+        private void sendClientMSG(string str)
+        {
+            handleClient.dict_hClient[rg_ClientLIst.Properties.Items[rg_ClientLIst.SelectedIndex].Description].sendMSG(str);
+        }
+
         private void btn_Send_Click(object sender, EventArgs e)
         {
 //             byte[] dgram = Encoding.UTF8.GetBytes(tb_Send.Text);
 //             srv_UDP.Send(dgram, dgram.Length, remoteEP);
+        }
+
+        private void btn_Stop_Click(object sender, EventArgs e)
+        {
+            sendClientMSG(controlMSG.Stop);
+        }
+
+        private void btn_Go_Click(object sender, EventArgs e)
+        {
+            sendClientMSG(controlMSG.Go);
+        }
+
+        private void btn_LowCal_Click(object sender, EventArgs e)
+        {
+            sendClientMSG(controlMSG.LowCal);
+        }
+
+        private void btn_HighCal_Click(object sender, EventArgs e)
+        {
+            sendClientMSG(controlMSG.HighCal);
+        }
+
+        private void btn_LowInfo_Click(object sender, EventArgs e)
+        {
+            sendClientMSG(controlMSG.LowInfo);
+        }
+
+        private void btn_HighInfo_Click(object sender, EventArgs e)
+        {
+            sendClientMSG(controlMSG.HighInfo);
         }
     }
 

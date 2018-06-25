@@ -18,6 +18,8 @@ namespace ArduinoSerialComm
         private int client_No = -1;
         public int CLIENT_NO { get { return client_No; } }
 
+        public static Dictionary<string, handleClient> dict_hClient = new Dictionary<string, handleClient>();
+
         public void startClient(TcpClient ClientSocket)
         {
             this.clientSocket = ClientSocket;
@@ -79,6 +81,18 @@ namespace ArduinoSerialComm
                     if (OnReceived != null)
                         OnReceived(msg);
 
+                    DataSet ds = null;
+                    if (DataSet.TryParse(msg, out ds))
+                    {
+                        client_No = ds.Pos;
+                        string id = CLIENT_NO.ToString();
+                        if (!dict_hClient.ContainsKey(id))
+                        {
+                            dict_hClient.Add(id, this);
+                        }
+                    }
+
+
 /*
                     msg = "Server to client(" + clientNo.ToString() + ") " + MessageCount.ToString();
                     if (OnReceived != null)
@@ -123,6 +137,21 @@ namespace ArduinoSerialComm
 
                 //if (OnCalculated != null)
                 //    OnCalculated();
+            }
+        }
+
+        public void sendMSG(string msg)
+        {
+            NetworkStream stream = null;
+            try
+            {
+                stream = clientSocket.GetStream();
+                byte[] buffer = Encoding.ASCII.GetBytes(msg);
+                stream.Write(buffer, 0, buffer.Length);
+            }
+            catch
+            {
+
             }
         }
     }

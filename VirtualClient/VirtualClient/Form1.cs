@@ -43,6 +43,11 @@ namespace VirtualClient
             {
                 InitSocket();
             }).Start();
+
+            Thread.Sleep(100);
+
+            Thread td = new Thread(new ThreadStart(td_getData));
+            td.Start();
         }
 
         private void InitSocket()
@@ -74,6 +79,29 @@ namespace VirtualClient
                 td.Abort();
         }
 
+        private void td_getData()
+        {
+            while(true)
+            {
+                stream = clientSocket.GetStream();
+                byte[] sbuffer = new byte[1024];
+                stream.Read(sbuffer, 0, sbuffer.Length);
+                string text = Encoding.ASCII.GetString(sbuffer, 0, sbuffer.Length);
+
+                if (textBox1.InvokeRequired)
+                {
+                    textBox1.BeginInvoke(new MethodInvoker(delegate
+                    {
+                        textBox1.AppendText(Environment.NewLine + " >> " + text);
+                    }));
+                }
+                else
+                    textBox1.AppendText(Environment.NewLine + " >> " + text);
+
+                Thread.Sleep(10);
+            }
+        }
+
         private void DisplayText(string text)
         {
             if (textBox1.InvokeRequired)
@@ -83,8 +111,8 @@ namespace VirtualClient
                     textBox1.AppendText(Environment.NewLine + " >> " + text);
                 }));
             }
-            else
-                textBox1.AppendText(Environment.NewLine + " >> " + text);
+            //else
+                //textBox1.AppendText(Environment.NewLine + " >> " + text);
         }
 
         private void btn_Send_Click(object sender, EventArgs e)

@@ -74,7 +74,7 @@ void loop() {
     outSig = !outSig;
 
     digitalWrite(13, outSig);
-    digitalWrite(OUT_SIGNAL, outSig);
+//    digitalWrite(OUT_SIGNAL, outSig);
     LastT = nowT;
     if(outSig == 0)
     {
@@ -167,9 +167,11 @@ void DataManagement()
       case 'S':
         mloof_flag = true;
         Serial.println("[Loof Stop Water Level High Low Data Management Mode\r\nLOW : L\r\nHIGH : H\r\nRead : R\r\nWrite : W\r\nRestart(Go) : G]");
+        digitalWrite(OUT_SIGNAL, 1);
         break;
       case 'G':
         mloof_flag = false;
+        digitalWrite(OUT_SIGNAL, 0);
         break;
       case 'L':
         str = "[Low Value ";
