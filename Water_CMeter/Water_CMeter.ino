@@ -89,10 +89,11 @@ void loop() {
       if(Test_flag)
       {
 //        int random_id = random(1000, 9999);
-        int random_id = 8808;
+        int random_id = 5678;
         ID = (String)random_id;
   
         int test_num = random(0, 100);
+        test_num = test_num + 10;
         str = FullDate() + WaterLevel_Format(test_num) + ID + "\r\nclock_cnt : " + String(clock_cnt);
       }
       else

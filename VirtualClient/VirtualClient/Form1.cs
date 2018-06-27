@@ -72,7 +72,6 @@ namespace VirtualClient
 /*
             if (clientSocket != null)
             {
-                clientSocket.Client.Disconnect(false);
                 clientSocket.Close();
                 clientSocket = null;
             }

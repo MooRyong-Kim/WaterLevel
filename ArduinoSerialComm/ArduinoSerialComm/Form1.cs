@@ -77,11 +77,22 @@ namespace ArduinoSerialComm
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
+            foreach(var it in handleClient.dict_hClient.Values)
+            {
+                if(it != null && it.clientSocket != null)
+                {
+                    it.clientSocket.Close();
+                    it.clientSocket = null;
+                }
+            }
+
+/*
             if (client != null)
             {
                 client.Close();
                 client = null;
             }
+*/
 
             if (server != null)
             {
@@ -107,7 +118,6 @@ namespace ArduinoSerialComm
 
                     handleClient h_client = new handleClient();
                     h_client.OnReceived += new handleClient.MessageDisplayHandler(DisplayText);
-                    //h_client.OnConnClient += new handleClient.ConnectClient(MakeClientDictionary);
                     h_client.startClient(client);
                 }
                 catch (SocketException se)
@@ -125,13 +135,6 @@ namespace ArduinoSerialComm
         {
             msgStack += text;
             check_String();
-        }
-        private void MakeClientDictionary(string id, handleClient hClient)
-        {
-            if (!dict_client.ContainsKey(id))
-            {
-                handleClient.dict_hClient.Add(id, hClient);
-            }
         }
 
 
@@ -273,6 +276,21 @@ namespace ArduinoSerialComm
         private void btn_HighInfo_Click(object sender, EventArgs e)
         {
             sendClientMSG(controlMSG.HighInfo);
+        }
+
+        bool record_flag = false;
+        private void btn_Record_Click(object sender, EventArgs e)
+        {
+            record_flag = !record_flag;
+
+            if(record_flag)
+            {
+                btn_Record.BackColor = System.Drawing.Color.Green;
+            }
+            else
+            {
+                btn_Record.BackColor = System.Drawing.Color.Red;
+            }
         }
     }
 

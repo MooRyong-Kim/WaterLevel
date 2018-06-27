@@ -41,6 +41,7 @@
             this.dockPanel3 = new DevExpress.XtraBars.Docking.DockPanel();
             this.dockPanel3_Container = new DevExpress.XtraBars.Docking.ControlContainer();
             this.layoutControl1 = new DevExpress.XtraLayout.LayoutControl();
+            this.tb_ReceiveCal = new System.Windows.Forms.TextBox();
             this.rg_ClientLIst = new DevExpress.XtraEditors.RadioGroup();
             this.btn_LowInfo = new System.Windows.Forms.Button();
             this.btn_HighInfo = new System.Windows.Forms.Button();
@@ -63,9 +64,10 @@
             this.layoutControlItem9 = new DevExpress.XtraLayout.LayoutControlItem();
             this.layoutControlItem10 = new DevExpress.XtraLayout.LayoutControlItem();
             this.layoutControlItem11 = new DevExpress.XtraLayout.LayoutControlItem();
-            this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
-            this.tb_ReceiveCal = new System.Windows.Forms.TextBox();
             this.layoutControlItem12 = new DevExpress.XtraLayout.LayoutControlItem();
+            this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
+            this.btn_Record = new System.Windows.Forms.Button();
+            this.layoutControlItem13 = new DevExpress.XtraLayout.LayoutControlItem();
             ((System.ComponentModel.ISupportInitialize)(this.chartControl1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dockManager1)).BeginInit();
             this.dockPanel2.SuspendLayout();
@@ -90,6 +92,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem10)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem11)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem12)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem13)).BeginInit();
             this.SuspendLayout();
             // 
             // chartControl1
@@ -110,7 +113,7 @@
             this.tb_Receive.Name = "tb_Receive";
             this.tb_Receive.ReadOnly = true;
             this.tb_Receive.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.tb_Receive.Size = new System.Drawing.Size(687, 113);
+            this.tb_Receive.Size = new System.Drawing.Size(514, 114);
             this.tb_Receive.TabIndex = 1;
             // 
             // dockManager1
@@ -223,6 +226,7 @@
             // 
             // layoutControl1
             // 
+            this.layoutControl1.Controls.Add(this.btn_Record);
             this.layoutControl1.Controls.Add(this.tb_ReceiveCal);
             this.layoutControl1.Controls.Add(this.rg_ClientLIst);
             this.layoutControl1.Controls.Add(this.btn_LowInfo);
@@ -245,19 +249,29 @@
             this.layoutControl1.TabIndex = 0;
             this.layoutControl1.Text = "layoutControl1";
             // 
+            // tb_ReceiveCal
+            // 
+            this.tb_ReceiveCal.Location = new System.Drawing.Point(530, 29);
+            this.tb_ReceiveCal.Multiline = true;
+            this.tb_ReceiveCal.Name = "tb_ReceiveCal";
+            this.tb_ReceiveCal.ReadOnly = true;
+            this.tb_ReceiveCal.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.tb_ReceiveCal.Size = new System.Drawing.Size(514, 114);
+            this.tb_ReceiveCal.TabIndex = 1;
+            // 
             // rg_ClientLIst
             // 
-            this.rg_ClientLIst.Location = new System.Drawing.Point(187, 146);
+            this.rg_ClientLIst.Location = new System.Drawing.Point(187, 147);
             this.rg_ClientLIst.Name = "rg_ClientLIst";
-            this.rg_ClientLIst.Size = new System.Drawing.Size(857, 26);
+            this.rg_ClientLIst.Size = new System.Drawing.Size(857, 25);
             this.rg_ClientLIst.StyleController = this.layoutControl1;
             this.rg_ClientLIst.TabIndex = 2;
             // 
             // btn_LowInfo
             // 
-            this.btn_LowInfo.Location = new System.Drawing.Point(703, 176);
+            this.btn_LowInfo.Location = new System.Drawing.Point(604, 176);
             this.btn_LowInfo.Name = "btn_LowInfo";
-            this.btn_LowInfo.Size = new System.Drawing.Size(168, 33);
+            this.btn_LowInfo.Size = new System.Drawing.Size(144, 33);
             this.btn_LowInfo.TabIndex = 2;
             this.btn_LowInfo.Text = "Low Info";
             this.btn_LowInfo.UseVisualStyleBackColor = true;
@@ -265,9 +279,9 @@
             // 
             // btn_HighInfo
             // 
-            this.btn_HighInfo.Location = new System.Drawing.Point(875, 176);
+            this.btn_HighInfo.Location = new System.Drawing.Point(752, 176);
             this.btn_HighInfo.Name = "btn_HighInfo";
-            this.btn_HighInfo.Size = new System.Drawing.Size(169, 33);
+            this.btn_HighInfo.Size = new System.Drawing.Size(144, 33);
             this.btn_HighInfo.TabIndex = 2;
             this.btn_HighInfo.Text = "High Info";
             this.btn_HighInfo.UseVisualStyleBackColor = true;
@@ -275,9 +289,9 @@
             // 
             // btn_HighCal
             // 
-            this.btn_HighCal.Location = new System.Drawing.Point(530, 176);
+            this.btn_HighCal.Location = new System.Drawing.Point(456, 176);
             this.btn_HighCal.Name = "btn_HighCal";
-            this.btn_HighCal.Size = new System.Drawing.Size(169, 33);
+            this.btn_HighCal.Size = new System.Drawing.Size(144, 33);
             this.btn_HighCal.TabIndex = 2;
             this.btn_HighCal.Text = "High Calibration";
             this.btn_HighCal.UseVisualStyleBackColor = true;
@@ -285,9 +299,9 @@
             // 
             // btn_LowCal
             // 
-            this.btn_LowCal.Location = new System.Drawing.Point(357, 176);
+            this.btn_LowCal.Location = new System.Drawing.Point(308, 176);
             this.btn_LowCal.Name = "btn_LowCal";
-            this.btn_LowCal.Size = new System.Drawing.Size(169, 33);
+            this.btn_LowCal.Size = new System.Drawing.Size(144, 33);
             this.btn_LowCal.TabIndex = 2;
             this.btn_LowCal.Text = "Low Calibration";
             this.btn_LowCal.UseVisualStyleBackColor = true;
@@ -295,9 +309,9 @@
             // 
             // btn_Go
             // 
-            this.btn_Go.Location = new System.Drawing.Point(184, 176);
+            this.btn_Go.Location = new System.Drawing.Point(160, 176);
             this.btn_Go.Name = "btn_Go";
-            this.btn_Go.Size = new System.Drawing.Size(169, 33);
+            this.btn_Go.Size = new System.Drawing.Size(144, 33);
             this.btn_Go.TabIndex = 2;
             this.btn_Go.Text = "Go";
             this.btn_Go.UseVisualStyleBackColor = true;
@@ -305,9 +319,9 @@
             // 
             // btn_GraphClear
             // 
-            this.btn_GraphClear.Location = new System.Drawing.Point(703, 213);
+            this.btn_GraphClear.Location = new System.Drawing.Point(604, 213);
             this.btn_GraphClear.Name = "btn_GraphClear";
-            this.btn_GraphClear.Size = new System.Drawing.Size(341, 20);
+            this.btn_GraphClear.Size = new System.Drawing.Size(440, 20);
             this.btn_GraphClear.TabIndex = 8;
             this.btn_GraphClear.Text = "Graph Clear";
             this.btn_GraphClear.UseVisualStyleBackColor = true;
@@ -317,7 +331,7 @@
             // 
             this.btn_Stop.Location = new System.Drawing.Point(12, 176);
             this.btn_Stop.Name = "btn_Stop";
-            this.btn_Stop.Size = new System.Drawing.Size(168, 33);
+            this.btn_Stop.Size = new System.Drawing.Size(144, 33);
             this.btn_Stop.TabIndex = 2;
             this.btn_Stop.Text = "Stop";
             this.btn_Stop.UseVisualStyleBackColor = true;
@@ -327,14 +341,14 @@
             // 
             this.tb_Send.Location = new System.Drawing.Point(12, 213);
             this.tb_Send.Name = "tb_Send";
-            this.tb_Send.Size = new System.Drawing.Size(341, 20);
+            this.tb_Send.Size = new System.Drawing.Size(292, 20);
             this.tb_Send.TabIndex = 21;
             // 
             // btn_Send
             // 
-            this.btn_Send.Location = new System.Drawing.Point(357, 213);
+            this.btn_Send.Location = new System.Drawing.Point(308, 213);
             this.btn_Send.Name = "btn_Send";
-            this.btn_Send.Size = new System.Drawing.Size(342, 20);
+            this.btn_Send.Size = new System.Drawing.Size(292, 20);
             this.btn_Send.TabIndex = 2;
             this.btn_Send.Text = "Send";
             this.btn_Send.UseVisualStyleBackColor = true;
@@ -356,7 +370,8 @@
             this.layoutControlItem9,
             this.layoutControlItem10,
             this.layoutControlItem11,
-            this.layoutControlItem12});
+            this.layoutControlItem12,
+            this.layoutControlItem13});
             this.layoutControlGroup1.Name = "Root";
             this.layoutControlGroup1.Size = new System.Drawing.Size(1056, 245);
             this.layoutControlGroup1.TextVisible = false;
@@ -366,7 +381,7 @@
             this.layoutControlItem1.Control = this.tb_Receive;
             this.layoutControlItem1.Location = new System.Drawing.Point(0, 0);
             this.layoutControlItem1.Name = "layoutControlItem1";
-            this.layoutControlItem1.Size = new System.Drawing.Size(691, 134);
+            this.layoutControlItem1.Size = new System.Drawing.Size(518, 135);
             this.layoutControlItem1.Text = "Network Msg";
             this.layoutControlItem1.TextLocation = DevExpress.Utils.Locations.Top;
             this.layoutControlItem1.TextSize = new System.Drawing.Size(172, 14);
@@ -376,25 +391,25 @@
             this.layoutControlItem2.Control = this.tb_Send;
             this.layoutControlItem2.Location = new System.Drawing.Point(0, 201);
             this.layoutControlItem2.Name = "layoutControlItem2";
-            this.layoutControlItem2.Size = new System.Drawing.Size(345, 24);
+            this.layoutControlItem2.Size = new System.Drawing.Size(296, 24);
             this.layoutControlItem2.TextSize = new System.Drawing.Size(0, 0);
             this.layoutControlItem2.TextVisible = false;
             // 
             // layoutControlItem3
             // 
             this.layoutControlItem3.Control = this.btn_Send;
-            this.layoutControlItem3.Location = new System.Drawing.Point(345, 201);
+            this.layoutControlItem3.Location = new System.Drawing.Point(296, 201);
             this.layoutControlItem3.Name = "layoutControlItem3";
-            this.layoutControlItem3.Size = new System.Drawing.Size(346, 24);
+            this.layoutControlItem3.Size = new System.Drawing.Size(296, 24);
             this.layoutControlItem3.TextSize = new System.Drawing.Size(0, 0);
             this.layoutControlItem3.TextVisible = false;
             // 
             // layoutControlItem4
             // 
             this.layoutControlItem4.Control = this.btn_GraphClear;
-            this.layoutControlItem4.Location = new System.Drawing.Point(691, 201);
+            this.layoutControlItem4.Location = new System.Drawing.Point(592, 201);
             this.layoutControlItem4.Name = "layoutControlItem4";
-            this.layoutControlItem4.Size = new System.Drawing.Size(345, 24);
+            this.layoutControlItem4.Size = new System.Drawing.Size(444, 24);
             this.layoutControlItem4.TextSize = new System.Drawing.Size(0, 0);
             this.layoutControlItem4.TextVisible = false;
             // 
@@ -403,83 +418,93 @@
             this.layoutControlItem5.Control = this.btn_Stop;
             this.layoutControlItem5.Location = new System.Drawing.Point(0, 164);
             this.layoutControlItem5.Name = "layoutControlItem5";
-            this.layoutControlItem5.Size = new System.Drawing.Size(172, 37);
+            this.layoutControlItem5.Size = new System.Drawing.Size(148, 37);
             this.layoutControlItem5.TextSize = new System.Drawing.Size(0, 0);
             this.layoutControlItem5.TextVisible = false;
             // 
             // layoutControlItem6
             // 
             this.layoutControlItem6.Control = this.btn_Go;
-            this.layoutControlItem6.Location = new System.Drawing.Point(172, 164);
+            this.layoutControlItem6.Location = new System.Drawing.Point(148, 164);
             this.layoutControlItem6.Name = "layoutControlItem6";
-            this.layoutControlItem6.Size = new System.Drawing.Size(173, 37);
+            this.layoutControlItem6.Size = new System.Drawing.Size(148, 37);
             this.layoutControlItem6.TextSize = new System.Drawing.Size(0, 0);
             this.layoutControlItem6.TextVisible = false;
             // 
             // layoutControlItem7
             // 
             this.layoutControlItem7.Control = this.btn_LowCal;
-            this.layoutControlItem7.Location = new System.Drawing.Point(345, 164);
+            this.layoutControlItem7.Location = new System.Drawing.Point(296, 164);
             this.layoutControlItem7.Name = "layoutControlItem7";
-            this.layoutControlItem7.Size = new System.Drawing.Size(173, 37);
+            this.layoutControlItem7.Size = new System.Drawing.Size(148, 37);
             this.layoutControlItem7.TextSize = new System.Drawing.Size(0, 0);
             this.layoutControlItem7.TextVisible = false;
             // 
             // layoutControlItem8
             // 
             this.layoutControlItem8.Control = this.btn_HighCal;
-            this.layoutControlItem8.Location = new System.Drawing.Point(518, 164);
+            this.layoutControlItem8.Location = new System.Drawing.Point(444, 164);
             this.layoutControlItem8.Name = "layoutControlItem8";
-            this.layoutControlItem8.Size = new System.Drawing.Size(173, 37);
+            this.layoutControlItem8.Size = new System.Drawing.Size(148, 37);
             this.layoutControlItem8.TextSize = new System.Drawing.Size(0, 0);
             this.layoutControlItem8.TextVisible = false;
             // 
             // layoutControlItem9
             // 
             this.layoutControlItem9.Control = this.btn_LowInfo;
-            this.layoutControlItem9.Location = new System.Drawing.Point(691, 164);
+            this.layoutControlItem9.Location = new System.Drawing.Point(592, 164);
             this.layoutControlItem9.Name = "layoutControlItem9";
-            this.layoutControlItem9.Size = new System.Drawing.Size(172, 37);
+            this.layoutControlItem9.Size = new System.Drawing.Size(148, 37);
             this.layoutControlItem9.TextSize = new System.Drawing.Size(0, 0);
             this.layoutControlItem9.TextVisible = false;
             // 
             // layoutControlItem10
             // 
             this.layoutControlItem10.Control = this.btn_HighInfo;
-            this.layoutControlItem10.Location = new System.Drawing.Point(863, 164);
+            this.layoutControlItem10.Location = new System.Drawing.Point(740, 164);
             this.layoutControlItem10.Name = "layoutControlItem10";
-            this.layoutControlItem10.Size = new System.Drawing.Size(173, 37);
+            this.layoutControlItem10.Size = new System.Drawing.Size(148, 37);
             this.layoutControlItem10.TextSize = new System.Drawing.Size(0, 0);
             this.layoutControlItem10.TextVisible = false;
             // 
             // layoutControlItem11
             // 
             this.layoutControlItem11.Control = this.rg_ClientLIst;
-            this.layoutControlItem11.Location = new System.Drawing.Point(0, 134);
+            this.layoutControlItem11.Location = new System.Drawing.Point(0, 135);
             this.layoutControlItem11.Name = "layoutControlItem11";
-            this.layoutControlItem11.Size = new System.Drawing.Size(1036, 30);
+            this.layoutControlItem11.Size = new System.Drawing.Size(1036, 29);
             this.layoutControlItem11.Text = "Client List";
             this.layoutControlItem11.TextSize = new System.Drawing.Size(172, 14);
-            // 
-            // tb_ReceiveCal
-            // 
-            this.tb_ReceiveCal.Location = new System.Drawing.Point(703, 29);
-            this.tb_ReceiveCal.Multiline = true;
-            this.tb_ReceiveCal.Name = "tb_ReceiveCal";
-            this.tb_ReceiveCal.ReadOnly = true;
-            this.tb_ReceiveCal.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.tb_ReceiveCal.Size = new System.Drawing.Size(341, 113);
-            this.tb_ReceiveCal.TabIndex = 1;
             // 
             // layoutControlItem12
             // 
             this.layoutControlItem12.Control = this.tb_ReceiveCal;
-            this.layoutControlItem12.Location = new System.Drawing.Point(691, 0);
+            this.layoutControlItem12.Location = new System.Drawing.Point(518, 0);
             this.layoutControlItem12.Name = "layoutControlItem12";
-            this.layoutControlItem12.Size = new System.Drawing.Size(345, 134);
+            this.layoutControlItem12.Size = new System.Drawing.Size(518, 135);
             this.layoutControlItem12.Text = "Target Network Calibration Msg";
             this.layoutControlItem12.TextLocation = DevExpress.Utils.Locations.Top;
             this.layoutControlItem12.TextSize = new System.Drawing.Size(172, 14);
+            // 
+            // btn_Record
+            // 
+            this.btn_Record.BackColor = System.Drawing.Color.Red;
+            this.btn_Record.Location = new System.Drawing.Point(900, 176);
+            this.btn_Record.Name = "btn_Record";
+            this.btn_Record.Size = new System.Drawing.Size(144, 33);
+            this.btn_Record.TabIndex = 2;
+            this.btn_Record.Text = "Record";
+            this.btn_Record.UseVisualStyleBackColor = false;
+            this.btn_Record.Click += new System.EventHandler(this.btn_Record_Click);
+            // 
+            // layoutControlItem13
+            // 
+            this.layoutControlItem13.Control = this.btn_Record;
+            this.layoutControlItem13.Location = new System.Drawing.Point(888, 164);
+            this.layoutControlItem13.Name = "layoutControlItem13";
+            this.layoutControlItem13.Size = new System.Drawing.Size(148, 37);
+            this.layoutControlItem13.TextSize = new System.Drawing.Size(0, 0);
+            this.layoutControlItem13.TextVisible = false;
             // 
             // Form1
             // 
@@ -516,6 +541,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem10)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem11)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem12)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem13)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -559,6 +585,8 @@
         private DevExpress.XtraLayout.LayoutControlItem layoutControlItem11;
         private System.Windows.Forms.TextBox tb_ReceiveCal;
         private DevExpress.XtraLayout.LayoutControlItem layoutControlItem12;
+        private System.Windows.Forms.Button btn_Record;
+        private DevExpress.XtraLayout.LayoutControlItem layoutControlItem13;
     }
 }
 

@@ -10,7 +10,7 @@ namespace ArduinoSerialComm
 {
     class handleClient
     {
-        TcpClient clientSocket;
+        public TcpClient clientSocket;
         private int client_No = -1;
         public int CLIENT_NO { get { return client_No; } }
 
@@ -39,54 +39,69 @@ namespace ArduinoSerialComm
                 byte[] buffer = new byte[1024];
                 string msg = string.Empty;
                 int bytes = 0;
-                int MessageCount = 0;
 
                 while (true)
                 {
-                    MessageCount++;
-
-                    stream = clientSocket.GetStream();
-                    //stream.ReadTimeout = 1000;
-
-                    bytes = stream.Read(buffer, 0, buffer.Length);
-                    msg = Encoding.ASCII.GetString(buffer, 0, bytes);
-
-                    if (msg.Contains("[ID : "))
+                    try
                     {
-                        Regex rg = new Regex("[\\d]{4}");
-                        Match match = rg.Match(msg);
+                        stream = clientSocket.GetStream();
+                        // 앞서 생성했던 Client에 의한 부하 발생 시 사용
+                        //stream.ReadTimeout = 1000;
 
-                        if (match.Success)
+                        bytes = stream.Read(buffer, 0, buffer.Length);
+                        msg = Encoding.ASCII.GetString(buffer, 0, bytes);
+
+                        if (msg.Contains("[ID : "))
                         {
-                            Group g = match.Groups[0];
-                            msg = g.ToString();
-                            int.TryParse(msg, out client_No);
+                            Regex rg = new Regex("[\\d]{4}");
+                            Match match = rg.Match(msg);
 
-                            if (OnConnClient != null)
-                                OnConnClient(CLIENT_NO.ToString(), this);
-                        }
-                    }
-
-                    if (OnReceived != null)
-                        OnReceived(msg);
-
-                    DataSet ds = null;
-                    if (DataSet.TryParse(msg, out ds))
-                    {
-                        client_No = ds.Pos;
-                        string id = CLIENT_NO.ToString();
-                        if (!dict_hClient.ContainsKey(id))
-                        {
-                            dict_hClient.Add(id, this);
-                        }
-                        else
-                        {
-                            if(!dict_hClient[id].Equals(this))
+                            if (match.Success)
                             {
-                                dict_hClient[id] = this;
+                                Group g = match.Groups[0];
+                                msg = g.ToString();
+                                int.TryParse(msg, out client_No);
+
+                                if (OnConnClient != null)
+                                    OnConnClient(CLIENT_NO.ToString(), this);
+                            }
+                        }
+
+                        if (OnReceived != null)
+                            OnReceived(msg);
+
+                        DataSet ds = null;
+                        if (DataSet.TryParse(msg, out ds))
+                        {
+                            client_No = ds.Pos;
+                            string id = CLIENT_NO.ToString();
+                            if (!dict_hClient.ContainsKey(id))
+                            {
+                                dict_hClient.Add(id, this);
+                            }
+                            else
+                            {
+                                if (!dict_hClient[id].Equals(this))
+                                {
+                                    dict_hClient[id] = this;
+                                }
                             }
                         }
                     }
+                    catch (Exception ex)
+                    {
+/*
+                        // 앞서 생성했던 Client에 의한 부하 발생 시 사용
+                        if(removeID != CLIENT_NO)
+                        {
+                            if(dict_hClient.ContainsKey(removeID))
+                            {
+                                dict_hClient.Remove(removeID);
+                            }
+                        }
+*/
+                    }
+
                 }
             }
             catch (SocketException se)
