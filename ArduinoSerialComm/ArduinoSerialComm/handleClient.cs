@@ -1,14 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using System.Threading;
-using System.Net.Sockets;
 using System.Diagnostics;
+using System.Net.Sockets;
+using System.Text;
 using System.Text.RegularExpressions;
-using System.ComponentModel;
+using System.Threading;
 
 namespace ArduinoSerialComm
 {
@@ -32,9 +28,6 @@ namespace ArduinoSerialComm
         public delegate void MessageDisplayHandler(string text);
         public event MessageDisplayHandler OnReceived;
 
-        //public delegate void CalculateClientCounter();
-        //public event CalculateClientCounter OnCalculated;
-
         public delegate void ConnectClient(string id, handleClient hClient);
         public event ConnectClient OnConnClient;
 
@@ -52,22 +45,11 @@ namespace ArduinoSerialComm
                 {
                     MessageCount++;
 
-//                     if (!clientSocket.Client.Connected)
-//                     {
-// 
-//                     }
-
                     stream = clientSocket.GetStream();
                     //stream.ReadTimeout = 1000;
 
-                    //var pi = stream.GetType().GetProperty("Socket", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-                    //var socketIp = ((Socket)pi.GetValue(stream, null)).RemoteEndPoint.ToString();
-                    //this.ip = socketIp;
-
                     bytes = stream.Read(buffer, 0, buffer.Length);
                     msg = Encoding.ASCII.GetString(buffer, 0, bytes);
-                    //msg = msg.Substring(0, msg.IndexOf("$"));
-                    //msg = "Data Received : " + msg;
 
                     if (msg.Contains("[ID : "))
                     {
@@ -105,25 +87,6 @@ namespace ArduinoSerialComm
                             }
                         }
                     }
-
-
-/*
-                    msg = "Server to client(" + clientNo.ToString() + ") " + MessageCount.ToString();
-                    if (OnReceived != null)
-                        OnReceived(msg);
-
-                    byte[] sbuffer = Encoding.Unicode.GetBytes(msg);
-                    stream.Write(sbuffer, 0, sbuffer.Length);
-                    stream.Flush();
-
-
-                    msg = " >> " + msg;
-                    if (OnReceived != null)
-                    {
-                        OnReceived(msg);
-                        OnReceived("");
-                    }
-*/
                 }
             }
             catch (SocketException se)
@@ -135,9 +98,6 @@ namespace ArduinoSerialComm
                     clientSocket.Close();
                     stream.Close();
                 }
-
-                //if (OnCalculated != null)
-                //    OnCalculated();
             }
             catch (Exception ex)
             {
@@ -148,9 +108,6 @@ namespace ArduinoSerialComm
                     clientSocket.Close();
                     stream.Close();
                 }
-
-                //if (OnCalculated != null)
-                //    OnCalculated();
             }
         }
 

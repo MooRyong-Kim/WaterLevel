@@ -1,26 +1,19 @@
-﻿using System;
+﻿using DevExpress.XtraCharts;
+using DevExpress.XtraEditors.Controls;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-
-using System.Threading;
-using DevExpress.XtraCharts;
-using DevExpress.XtraEditors.Controls;
-using System.Text.RegularExpressions;
+using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
-using System.Diagnostics;
+using System.Text.RegularExpressions;
+using System.Threading;
+using System.Windows.Forms;
 
 namespace ArduinoSerialComm
 {
     public partial class Form1 : Form
     {
-        //Dictionary<string, Tuple<handleClient, BindingList<Record>>> dict_client = new Dictionary<string, Tuple<handleClient, BindingList<Record>>>();
         Dictionary<string, BindingList<Record>> dict_client = new Dictionary<string, BindingList<Record>>();
 
         public delegate void MessageSendHandler(string text);
@@ -28,7 +21,6 @@ namespace ArduinoSerialComm
 
         TcpListener server = null;
         TcpClient client = null;
-        int cnt = 0;
         string msgStack = "";
 
         struct controlMSG
@@ -87,8 +79,6 @@ namespace ArduinoSerialComm
         {
             if (client != null)
             {
-//                byte[] dgram = Encoding.ASCII.GetBytes("<Disconnect>\r\n");
-//                client.GetStream().Write(dgram, 0, dgram.Length);
                 client.Close();
                 client = null;
             }
@@ -112,17 +102,13 @@ namespace ArduinoSerialComm
                 try
                 {
                     client = server.AcceptTcpClient();
-                    //                    string str = IPAddress.Parse(((IPEndPoint)client.Client.RemoteEndPoint).Address.ToString()));
+                    //string str = IPAddress.Parse(((IPEndPoint)client.Client.RemoteEndPoint).Address.ToString()));
                     DisplayText("[Accept connection from client]");
 
                     handleClient h_client = new handleClient();
                     h_client.OnReceived += new handleClient.MessageDisplayHandler(DisplayText);
-                    //h_client.OnCalculated += new handleClient.CalculateClientCounter(CalculateCounter);
                     //h_client.OnConnClient += new handleClient.ConnectClient(MakeClientDictionary);
                     h_client.startClient(client);
-
-
-//                     dict_client.Add
                 }
                 catch (SocketException se)
                 {
@@ -133,11 +119,6 @@ namespace ArduinoSerialComm
                     Trace.WriteLine(string.Format("InitSocket - Exception : {0}", ex.Message));
                 }
             }
-        }
-
-        private void CalculateCounter()
-        {
-            //counter--;
         }
 
         private void DisplayText(string text)
@@ -167,33 +148,6 @@ namespace ArduinoSerialComm
             se.ArgumentDataMember = "TIMESTAMP";
             se.ValueDataMembers.AddRange(new string[] { "DATA" });
         }
-
-        /*
-                TcpListener srv_TCP = new TcpListener(IPAddress.Any, 7777);
-                void tdTCPFunc()
-                {
-                    srv_TCP.Start();
-                    TcpClient tc = srv_TCP.AcceptTcpClient();
-                    NetworkStream net_stream = tc.GetStream();
-                    while (true)
-                    {
-                        // (3) 데이타 송신
-                        string msg = "Hello world";
-        //                byte[] dgram = Encoding.ASCII.GetBytes(msg);
-                        byte[] dgram = new byte[1024];
-                        int nbytes = net_stream.Read(dgram, 0, dgram.Length);
-
-                        if(0 < nbytes)
-                        {
-                            net_stream.Write(dgram, 0, nbytes);
-                            msgStack += Encoding.Default.GetString(dgram);
-                            check_String();
-                        }
-                    }
-                    net_stream.Close();
-                    tc.Close();
-                }
-        */
 
         private void check_String()
         {
@@ -262,7 +216,6 @@ namespace ArduinoSerialComm
 
         private void btn_GraphClear_Click(object sender, EventArgs e)
         {
-            cnt = 0;
             foreach(var it in dict_client.Values)
             {
                 it.Clear();
@@ -290,8 +243,6 @@ namespace ArduinoSerialComm
             {
                 sendClientMSG(tb_Send.Text);
             }
-//             byte[] dgram = Encoding.UTF8.GetBytes(tb_Send.Text);
-//             srv_UDP.Send(dgram, dgram.Length, remoteEP);
         }
 
         private void btn_Stop_Click(object sender, EventArgs e)
