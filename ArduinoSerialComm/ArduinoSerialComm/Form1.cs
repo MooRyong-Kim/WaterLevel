@@ -9,12 +9,13 @@ using System.Net.Sockets;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
+using System.IO;
 
 namespace ArduinoSerialComm
 {
     public partial class Form1 : Form
     {
-        Dictionary<string, BindingList<Record>> dict_client = new Dictionary<string, BindingList<Record>>();
+        Dictionary<string, BindingList<Record>> dict_ReceiveData = new Dictionary<string, BindingList<Record>>();
 
         public delegate void MessageSendHandler(string text);
         public event MessageSendHandler OnSend;
@@ -152,6 +153,7 @@ namespace ArduinoSerialComm
             se.ValueDataMembers.AddRange(new string[] { "DATA" });
         }
 
+        List<DataSet> ds_list;
         private void check_String()
         {
             while(true)
@@ -183,12 +185,12 @@ namespace ArduinoSerialComm
                             tb_Receive.Invoke(new MethodInvoker(delegate()
                             {
                                 string id = ds.Pos.ToString();
-                                if (dict_client.ContainsKey(id))
+                                if (dict_ReceiveData.ContainsKey(id))
                                 {
-                                    dict_client[id].Add(new Record(ds, ds.WLev));
-                                    if (50 < dict_client[id].Count)
+                                    dict_ReceiveData[id].Add(new Record(ds, ds.WLev));
+                                    if (50 < dict_ReceiveData[id].Count)
                                     {
-                                        dict_client[id].RemoveAt(0);
+                                        dict_ReceiveData[id].RemoveAt(0);
                                     }
 
                                     tb_Receive.AppendText("- " + ds.FullData + "\r\n");
@@ -196,7 +198,7 @@ namespace ArduinoSerialComm
                                 else
                                 {
                                     BindingList<Record> bList_Record = new BindingList<Record>();
-                                    dict_client.Add(id, bList_Record);
+                                    dict_ReceiveData.Add(id, bList_Record);
                                     setSeries(id, bList_Record);
 
                                     var rbtn = new RadioGroupItem();
@@ -204,6 +206,26 @@ namespace ArduinoSerialComm
 
                                     rg_ClientLIst.Properties.Items.Add(rbtn);
                                 }
+
+                                string str_ID = rg_ClientLIst.Properties.Items[rg_ClientLIst.SelectedIndex].Description;
+                                if (!temp_rflag && record_flag)
+                                {
+                                    ds_list = new List<DataSet>();
+                                }
+
+                                if(record_flag && ds.Pos.ToString() == str_ID)
+                                {
+                                    ds_list.Add(ds);
+                                }
+
+                                if(temp_rflag && !record_flag)
+                                {
+                                    save_CSV(str_ID, ds_list);
+                                    ds_list.Clear();
+                                    ds_list = null;
+                                }
+
+                                temp_rflag = record_flag;
                             }));
                     }
                     else
@@ -215,11 +237,38 @@ namespace ArduinoSerialComm
                     }
                 }
             }
-       }
+        }
+
+        private void save_CSV(string id, List<DataSet> save_Data)
+        {
+            string csv_filePath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\Record\\" + id + ".csv";
+            DirectoryInfo di = new DirectoryInfo(System.IO.Path.GetDirectoryName(csv_filePath));
+            if (di.Exists == false)
+            {
+                di.Create();
+            }
+            StreamWriter sw = File.CreateText(csv_filePath);
+
+            // Low, High Data
+            //sw.WriteLine("LOW Clock Count : ," + LCnt);
+            //sw.WriteLine("LOW Depth(cm) : ," + LCm);
+            //sw.WriteLine("HIGH Clock Count : ," + HCnt);
+            //sw.WriteLine("HIGH Depth(cm) : ," + HCm);
+
+            foreach(var it in save_Data)
+            {
+                string cCount = "";
+                string depthCm = it.WLev.ToString();
+                sw.WriteLine("Clock Count : ," + cCount + ",Depth(cm) : ," + depthCm);
+            }
+
+            sw.Flush();
+            sw.Close();
+        }
 
         private void btn_GraphClear_Click(object sender, EventArgs e)
         {
-            foreach(var it in dict_client.Values)
+            foreach(var it in dict_ReceiveData.Values)
             {
                 it.Clear();
             }
@@ -279,6 +328,7 @@ namespace ArduinoSerialComm
         }
 
         bool record_flag = false;
+        bool temp_rflag = false;
         private void btn_Record_Click(object sender, EventArgs e)
         {
             record_flag = !record_flag;

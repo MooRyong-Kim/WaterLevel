@@ -38,7 +38,7 @@ enum EEPROMAddr
 // ID(0~9999)
 String ID = "1234";
 
-bool Test_flag = true;
+bool Test_flag = false;
 
 void setup() {
   // put your setup code here, to run once:
