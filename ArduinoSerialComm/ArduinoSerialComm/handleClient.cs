@@ -51,7 +51,14 @@ namespace ArduinoSerialComm
                 while (true)
                 {
                     MessageCount++;
+
+//                     if (!clientSocket.Client.Connected)
+//                     {
+// 
+//                     }
+
                     stream = clientSocket.GetStream();
+                    //stream.ReadTimeout = 1000;
 
                     //var pi = stream.GetType().GetProperty("Socket", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
                     //var socketIp = ((Socket)pi.GetValue(stream, null)).RemoteEndPoint.ToString();
@@ -89,6 +96,13 @@ namespace ArduinoSerialComm
                         if (!dict_hClient.ContainsKey(id))
                         {
                             dict_hClient.Add(id, this);
+                        }
+                        else
+                        {
+                            if(!dict_hClient[id].Equals(this))
+                            {
+                                dict_hClient[id] = this;
+                            }
                         }
                     }
 
@@ -142,16 +156,19 @@ namespace ArduinoSerialComm
 
         public void sendMSG(string msg)
         {
-            NetworkStream stream = null;
-            try
+            if(clientSocket.Connected)
             {
-                stream = clientSocket.GetStream();
-                byte[] buffer = Encoding.ASCII.GetBytes(msg);
-                stream.Write(buffer, 0, buffer.Length);
-            }
-            catch
-            {
+                NetworkStream stream = null;
+                try
+                {
+                    stream = clientSocket.GetStream();
+                    byte[] buffer = Encoding.ASCII.GetBytes(msg);
+                    stream.Write(buffer, 0, buffer.Length);
+                }
+                catch
+                {
 
+                }
             }
         }
     }

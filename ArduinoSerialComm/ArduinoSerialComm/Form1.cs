@@ -33,12 +33,21 @@ namespace ArduinoSerialComm
 
         struct controlMSG
         {
-            public const string Stop = "S\r\n";
-            public const string Go = "G\r\n";
-            public const string LowCal = "L\r\nW\r\n";
-            public const string HighCal = "H\r\nW\r\n";
-            public const string LowInfo = "L\r\nR\r\n";
-            public const string HighInfo = "H\r\nR\r\n";
+            //Arduino DataManagement 사용시
+            //public const string Stop = "S\r\n";
+            //public const string Go = "G\r\n";
+            //public static readonly string[] LowCal = { "L", "W" };
+            //public static readonly string[] HighCal = { "H", "W" };
+            //public static readonly string[] LowInfo = { "L", "R" };
+            //public static readonly string[] HighInfo = { "H", "R" };
+
+            //Arduino DataManagement_Improve 사용시
+            public const string Stop = "S";
+            public const string Go = "G";
+            public const string LowCal = "M";
+            public const string HighCal = "D";
+            public const string LowInfo = "L";
+            public const string HighInfo = "H";
         }
 
         public Form1()
@@ -266,8 +275,21 @@ namespace ArduinoSerialComm
             handleClient.dict_hClient[rg_ClientLIst.Properties.Items[rg_ClientLIst.SelectedIndex].Description].sendMSG(str);
         }
 
+        private void sendClientMSG(string[] str)
+        {
+            foreach(var it in str)
+            {
+                handleClient.dict_hClient[rg_ClientLIst.Properties.Items[rg_ClientLIst.SelectedIndex].Description].sendMSG(it);
+            }
+        }
+
         private void btn_Send_Click(object sender, EventArgs e)
         {
+            int tempI = -1;
+            if(int.TryParse(tb_Send.Text, out tempI))
+            {
+                sendClientMSG(tb_Send.Text);
+            }
 //             byte[] dgram = Encoding.UTF8.GetBytes(tb_Send.Text);
 //             srv_UDP.Send(dgram, dgram.Length, remoteEP);
         }

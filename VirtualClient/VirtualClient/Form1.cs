@@ -43,11 +43,6 @@ namespace VirtualClient
             {
                 InitSocket();
             }).Start();
-
-            Thread.Sleep(100);
-
-            Thread td = new Thread(new ThreadStart(td_getData));
-            td.Start();
         }
 
         private void InitSocket()
@@ -60,6 +55,9 @@ namespace VirtualClient
                 {
                     label1.Text = "Client Socket Program - Server Connected ...";
                 }));
+
+                tdGetData = new Thread(new ThreadStart(td_getData));
+                tdGetData.Start();
             }
             catch (SocketException se)
             {
@@ -73,32 +71,52 @@ namespace VirtualClient
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (clientSocket != null)
-                clientSocket.Close();
             if (td != null)
                 td.Abort();
+
+            if (tdGetData != null)
+                tdGetData.Abort();
+
+/*
+            if (clientSocket != null)
+            {
+                clientSocket.Client.Disconnect(false);
+                clientSocket.Close();
+                clientSocket = null;
+            }
+
+            if (stream != null)
+            {
+                stream.Close();
+                stream = null;
+            }
+*/
         }
 
+        Thread tdGetData;
         private void td_getData()
         {
             while(true)
             {
-                stream = clientSocket.GetStream();
-                byte[] sbuffer = new byte[1024];
-                stream.Read(sbuffer, 0, sbuffer.Length);
-                string text = Encoding.ASCII.GetString(sbuffer, 0, sbuffer.Length);
-
-                if (textBox1.InvokeRequired)
+                if(clientSocket.Connected)
                 {
-                    textBox1.BeginInvoke(new MethodInvoker(delegate
-                    {
-                        textBox1.AppendText(Environment.NewLine + " >> " + text);
-                    }));
-                }
-                else
-                    textBox1.AppendText(Environment.NewLine + " >> " + text);
+                    stream = clientSocket.GetStream();
+                    byte[] sbuffer = new byte[1024];
+                    stream.Read(sbuffer, 0, sbuffer.Length);
+                    string text = Encoding.ASCII.GetString(sbuffer, 0, sbuffer.Length);
 
-                Thread.Sleep(10);
+                    if (textBox1.InvokeRequired)
+                    {
+                        textBox1.BeginInvoke(new MethodInvoker(delegate
+                        {
+                            textBox1.AppendText(Environment.NewLine + " >> " + text);
+                        }));
+                    }
+                    else
+                        textBox1.AppendText(Environment.NewLine + " >> " + text);
+                }
+
+                Thread.Sleep(100);
             }
         }
 
@@ -163,15 +181,23 @@ namespace VirtualClient
         private void td_Test()
         {
             Random rd = new Random();
-            stream = clientSocket.GetStream();
             while (true)
             {
-                string str = DateTime.Now.ToString("yyyyMMddHHmmss") + String.Format("{0:000.00}", rd.Next(0, 100)) + id + "\r\n";
-                byte[] sbuffer = Encoding.ASCII.GetBytes(str);
-                stream.Write(sbuffer, 0, sbuffer.Length);
+                if (clientSocket.Connected)
+                {
+                    stream = clientSocket.GetStream();
+                    string str = DateTime.Now.ToString("yyyyMMddHHmmss") + String.Format("{0:000.00}", rd.Next(0, 100)) + id + "\r\n";
+                    byte[] sbuffer = Encoding.ASCII.GetBytes(str);
+                    stream.Write(sbuffer, 0, sbuffer.Length);
+                }
 
                 Thread.Sleep(1000);
             }
+        }
+
+        private void btn_Stop_Click(object sender, EventArgs e)
+        {
+            td.Abort();
         }
     }
 }

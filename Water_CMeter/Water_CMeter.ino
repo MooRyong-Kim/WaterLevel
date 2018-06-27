@@ -54,8 +54,9 @@ void setup() {
 //  EEPROM.write(HD, 79);
   attachInterrupt(digitalPinToInterrupt(IN_LOW), lowUp, RISING);
 
-  String str = "[ID : " + ID + "]";
-  Serial.println(str);
+//  String str = "[ID : " + ID + "]";
+//  Serial.println(str);
+
   LastT = micros();
   
   // (hour, minute, second, day, month, year)
@@ -66,7 +67,8 @@ EEPROMAddr eAddr = Unknown;
 String str;
 bool mloof_flag = false;
 void loop() {
-  DataManagement();
+//  DataManagement();
+  DataManagement_Improve();
 
   unsigned long nowT = micros();
   if ((nowT - LastT) > Cycle)
@@ -74,7 +76,7 @@ void loop() {
     outSig = !outSig;
 
     digitalWrite(13, outSig);
-//    digitalWrite(OUT_SIGNAL, outSig);
+    digitalWrite(OUT_SIGNAL, outSig);
     LastT = nowT;
     if(outSig == 0)
     {
@@ -86,6 +88,10 @@ void loop() {
 
       if(Test_flag)
       {
+//        int random_id = random(1000, 9999);
+        int random_id = 8808;
+        ID = (String)random_id;
+  
         int test_num = random(0, 100);
         str = FullDate() + WaterLevel_Format(test_num) + ID + "\r\nclock_cnt : " + String(clock_cnt);
       }
@@ -167,11 +173,11 @@ void DataManagement()
       case 'S':
         mloof_flag = true;
         Serial.println("[Loof Stop Water Level High Low Data Management Mode\r\nLOW : L\r\nHIGH : H\r\nRead : R\r\nWrite : W\r\nRestart(Go) : G]");
-        digitalWrite(OUT_SIGNAL, 1);
+//        digitalWrite(OUT_SIGNAL, 1);
         break;
       case 'G':
         mloof_flag = false;
-        digitalWrite(OUT_SIGNAL, 0);
+//        digitalWrite(OUT_SIGNAL, 0);
         break;
       case 'L':
         str = "[Low Value ";
@@ -259,6 +265,107 @@ void DataManagement()
 //      EEPROM.write(address + 1, int(timevalue.byte[0]));
 //      Serial.println(" Finish");
 //      Serial.print("Input Depth : ");
+  }
+}
+
+void WriteCalValue(int eAdress)
+{
+  String str = "";
+  int temp_val = 0;
+  EEPROM.write(eAdress, int(timevalue.byte[1]));
+  EEPROM.write(eAdress + 1, int(timevalue.byte[0]));
+  temp_val = Converti8To16(int(timevalue.byte[1]), int(timevalue.byte[0]));
+  
+  str += "[Low Write : " + String(temp_val) + "]";
+  Serial.println(str);
+  Serial.println("[Please Input Depth : ]");
+
+  WaitRead();
+  
+  {
+    String temp_str = Serial.readString();
+    int temp_int = temp_str.toInt();
+    if(temp_str.toInt() != 0)
+    {
+      EEPROM.write(eAdress + 2, temp_int);
+      String str = "[Input Depth is " + String(temp_int) + "]";
+      Serial.println(str);
+    }
+    else
+    {
+      Serial.print("[Input Depth is wrong]");
+    }
+  }
+}
+
+void WaitRead()
+{
+  while(!Serial.available())
+  {
+    
+  }
+}
+
+void DataManagement_Improve()
+{
+  if(Serial.available())
+  {
+    char ch = toupper(Serial.read());
+    int temp_val = 0;
+
+    // G : Go(Restart Send Water Level)
+    // L : Low(Shallowest) Data Read
+    // H : High(Deepest) Data Read
+    // M : Most Shallow
+    // D : Deepest
+    switch(ch)
+    {
+      case 'S':
+        mloof_flag = true;
+        Serial.println("[Loof Stop Water Level High Low Data Management Mode]");
+        break;
+      case 'G':
+        mloof_flag = false;
+        Serial.println("[Management Mode Finish, Loof Restart]");
+        break;
+      case 'L':
+        eAddr = LH;
+
+        temp_val = Converti8To16(EEPROM.read(eAddr), EEPROM.read(eAddr + 1));
+        str += "[Low Value Read : " + String(temp_val) + " | Depth : " + EEPROM.read(eAddr + 2) + "]";
+        Serial.println(str);
+
+        str = "";
+        eAddr = Unknown;
+        break;
+      case 'H':
+        eAddr = HH;
+
+        temp_val = Converti8To16(EEPROM.read(eAddr), EEPROM.read(eAddr + 1));
+        str += "[High Value Read : " + String(temp_val) + " | Depth : " + EEPROM.read(eAddr + 2) + "]";
+        Serial.println(str);
+
+        str = "";
+        eAddr = Unknown;
+        break;
+      case 'M':
+        eAddr = LH;
+        WriteCalValue(eAddr);
+        str = "";
+        eAddr = Unknown;
+        break;
+      case 'D':
+        eAddr = HH;
+        WriteCalValue(eAddr);
+        str = "";
+        eAddr = Unknown;
+        break;
+      default:
+        str = "[Wrong Input]";
+        Serial.println(str);
+        str = "";
+        break;
+    }
   }
 }
 

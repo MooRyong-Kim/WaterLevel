@@ -33,6 +33,7 @@
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.btn_Send = new System.Windows.Forms.Button();
             this.btn_Test = new System.Windows.Forms.Button();
+            this.btn_Stop = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // textBox1
@@ -85,11 +86,23 @@
             this.btn_Test.UseVisualStyleBackColor = true;
             this.btn_Test.Click += new System.EventHandler(this.btn_Test_Click);
             // 
+            // btn_Stop
+            // 
+            this.btn_Stop.Font = new System.Drawing.Font("굴림", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.btn_Stop.Location = new System.Drawing.Point(12, 399);
+            this.btn_Stop.Name = "btn_Stop";
+            this.btn_Stop.Size = new System.Drawing.Size(116, 39);
+            this.btn_Stop.TabIndex = 3;
+            this.btn_Stop.Text = "Stop";
+            this.btn_Stop.UseVisualStyleBackColor = true;
+            this.btn_Stop.Click += new System.EventHandler(this.btn_Stop_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.btn_Stop);
             this.Controls.Add(this.btn_Test);
             this.Controls.Add(this.btn_Send);
             this.Controls.Add(this.label1);
@@ -109,6 +122,7 @@
         private System.Windows.Forms.TextBox textBox2;
         private System.Windows.Forms.Button btn_Send;
         private System.Windows.Forms.Button btn_Test;
+        private System.Windows.Forms.Button btn_Stop;
     }
 }
 
