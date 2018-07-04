@@ -54,7 +54,7 @@ void Enque(float inputNum)
   }
   else
   {
-    for(int i = 0; i < qSize - 2; i++)
+    for(int i = 0; i < qSize - 1; i++)
     {
       Queue[i] = Queue[i+1];
     }
@@ -63,7 +63,7 @@ void Enque(float inputNum)
 }
 
 // cm
-float limitDelta = 1.2;
+float limitDelta = 0.5;
 float lastOutput = 0;
 float Filtering(float inputNum)
 {
@@ -76,11 +76,12 @@ float Filtering(float inputNum)
       
   if(qCnt == qSize)
   {
-    for(int i = 0; i < qSize - 1; i++)
+    for(int i = 0; i < qSize; i++)
     {
       avgValue += Queue[i];
     }
     avgValue = avgValue / qSize;
+    
     lLimitValue = avgValue - limitDelta;
     hLimitValue = avgValue + limitDelta;
 
@@ -90,7 +91,8 @@ float Filtering(float inputNum)
       lastOutput = inputNum;
     }
   }
-  
+
+//  Serial.println(resultOutput);
   return resultOutput;
 }
 
@@ -434,6 +436,14 @@ void DataManagement_Improve()
         WriteCalValue(eAddr);
         str = "";
         eAddr = Unknown;
+        break;
+      case 'P':
+        str = "";
+        for(int i = 0; i < qSize; i++)
+        {
+          str += "Q[" + String(i) + "] : " + String(Queue[i]) + "\r\n";
+        }
+        Serial.println(str);
         break;
       default:
         str = "[Wrong Input]";
