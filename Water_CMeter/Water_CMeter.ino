@@ -10,7 +10,7 @@
 
 // Water Measurement
 unsigned long LastT = 0;
-unsigned long Cycle = 500000;
+unsigned long Cycle = 125000;
 int outSig = 0;
 unsigned long startT = 0;
 unsigned long endT = 0;
@@ -38,7 +38,61 @@ enum EEPROMAddr
 // ID(0~9999)
 String ID = "1234";
 
-bool Test_flag = false;
+int Test_flag = 2;
+
+int testCnt = 0;
+
+const int qSize = 8;
+int qCnt = 0;
+float Queue[qSize];
+void Enque(float inputNum)
+{
+  if(qCnt < qSize)
+  {
+    Queue[qCnt] = inputNum;
+    qCnt++;
+  }
+  else
+  {
+    for(int i = 0; i < qSize - 2; i++)
+    {
+      Queue[i] = Queue[i+1];
+    }
+    Queue[qSize - 1] = inputNum;
+  }
+}
+
+// cm
+float limitDelta = 1.2;
+float lastOutput = 0;
+float Filtering(float inputNum)
+{
+  float resultOutput = 0;
+  float avgValue = 0;
+  float lLimitValue = 0;
+  float hLimitValue = 0;
+  
+  resultOutput = lastOutput;
+      
+  if(qCnt == qSize)
+  {
+    for(int i = 0; i < qSize - 1; i++)
+    {
+      avgValue += Queue[i];
+    }
+    avgValue = avgValue / qSize;
+    lLimitValue = avgValue - limitDelta;
+    hLimitValue = avgValue + limitDelta;
+
+    if(inputNum > lLimitValue && inputNum < hLimitValue)
+    {
+      resultOutput = inputNum;
+      lastOutput = inputNum;
+    }
+  }
+  
+  return resultOutput;
+}
 
 void setup() {
   // put your setup code here, to run once:
@@ -86,19 +140,39 @@ void loop() {
     {
       String str = "";
 
-      if(Test_flag)
+      switch(Test_flag)
       {
-//        int random_id = random(1000, 9999);
-        int random_id = 5678;
-        ID = (String)random_id;
-  
-        int test_num = random(0, 100);
-        test_num = test_num + 10;
-        str = FullDate() + WaterLevel_Format(test_num) + ID + "\r\nclock_cnt : " + String(clock_cnt);
-      }
-      else
-      {
-        str = FullDate() + WaterLevel_Format(result_val) + ID + "\r\nclock_cnt : " + String(clock_cnt);
+        case 0:
+          // Direct Output Value
+          {
+            str = FullDate() + WaterLevel_Format(result_val) + ID + "\r\nclock_cnt : " + String(clock_cnt);
+          }
+          break;
+        case 1:
+          // Random value for just Test
+          {
+//            int random_id = random(1000, 9999);
+            int random_id = 5678;
+            ID = (String)random_id;
+      
+            int test_num = random(0, 100);
+            test_num = test_num + 10;
+            str = FullDate() + WaterLevel_Format(test_num) + ID + "\r\nclock_cnt : " + String(clock_cnt);
+          }
+          break;
+        case 2:
+          // Use filterring Output Value
+          {
+            Enque(result_val);
+
+            {
+              if(qCnt == qSize)
+              {
+                str = FullDate() + WaterLevel_Format(Filtering(result_val)) + ID + "\r\nclock_cnt : " + String(clock_cnt);
+              }
+            }
+          }
+          break;
       }
       
       Serial.println(str);

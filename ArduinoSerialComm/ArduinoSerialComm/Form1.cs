@@ -46,6 +46,14 @@ namespace ArduinoSerialComm
         public Form1()
         {
             InitializeComponent();
+
+            var fsub = new Form();
+            var subCon = new UC_NetworkMsgPage();
+            subCon.Dock = DockStyle.Fill;
+            fsub.Controls.Add(subCon);
+            fsub.Size = new System.Drawing.Size(720, 480);
+            fsub.Show();
+
             Load += Form1_Load;
             FormClosing += Form1_FormClosing;
         }
