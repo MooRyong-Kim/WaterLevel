@@ -71,7 +71,7 @@ namespace ArduinoSerialComm
             diagram.AxisY.WholeRange.Auto = false;
             diagram.AxisY.WholeRange.SetMinMaxValues(-5, 110);
 
-            rg_ClientLIst.SelectedIndexChanged += Rg_ClientLIst_SelectedIndexChanged;
+            //rg_ClientLIst.SelectedIndexChanged += Rg_ClientLIst_SelectedIndexChanged;
                 
             // socket start
             Thread t = new Thread(InitSocket);
@@ -81,7 +81,7 @@ namespace ArduinoSerialComm
 
         private void Rg_ClientLIst_SelectedIndexChanged(object sender, EventArgs e)
         {
-            tb_ReceiveCal.Clear();
+            //tb_ReceiveCal.Clear();
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
@@ -196,7 +196,7 @@ namespace ArduinoSerialComm
                 DataSet ds = null;
                 if (DataSet.TryParse(str, out ds))
                 {
-                    tb_Receive.Invoke(new MethodInvoker(delegate ()
+                    uC_NetworkMsgPage1.Invoke(new MethodInvoker(delegate ()
                     {
                         string id = ds.Pos.ToString();
                         if (dict_ReceiveData.ContainsKey(id))
@@ -207,7 +207,8 @@ namespace ArduinoSerialComm
                                 dict_ReceiveData[id].RemoveAt(0);
                             }
 
-                            tb_Receive.AppendText("- " + ds.FullData + "\r\n");
+                            //tb_Receive.AppendText("- " + ds.FullData + "\r\n");
+                            uC_NetworkMsgPage1.DisplayMsg(ds);
                         }
                         else
                         {
@@ -218,10 +219,12 @@ namespace ArduinoSerialComm
                             var rbtn = new RadioGroupItem();
                             rbtn.Description = id;
 
-                            rg_ClientLIst.Properties.Items.Add(rbtn);
+                            //rg_ClientLIst.Properties.Items.Add(rbtn);
+                            uC_NetworkMsgPage1.AddChannel(id);
                         }
 
-                        string str_ID = rg_ClientLIst.Properties.Items[rg_ClientLIst.SelectedIndex].Description;
+                        //string str_ID = rg_ClientLIst.Properties.Items[rg_ClientLIst.SelectedIndex].Description;
+                        string str_ID = uC_NetworkMsgPage1.now_SelID;
                         if (!temp_rflag && record_flag)
                         {
                             ds_list = new List<DataSet>();
@@ -244,9 +247,15 @@ namespace ArduinoSerialComm
                 }
                 else
                 {
-                    tb_Receive.Invoke(new MethodInvoker(delegate ()
+                    /*
+                                        tb_Receive.Invoke(new MethodInvoker(delegate ()
+                                        {
+                                            tb_Receive.AppendText(str + "\r\n");
+                                        }));
+                    */
+                    uC_NetworkMsgPage1.Invoke(new MethodInvoker(delegate ()
                     {
-                        tb_Receive.AppendText(str + "\r\n");
+                        uC_NetworkMsgPage1.DisplayMsg(str + "\n");
                     }));
                 }
             }
@@ -261,12 +270,6 @@ namespace ArduinoSerialComm
                 di.Create();
             }
             StreamWriter sw = File.CreateText(csv_filePath);
-
-            // Low, High Data
-            //sw.WriteLine("LOW Clock Count : ," + LCnt);
-            //sw.WriteLine("LOW Depth(cm) : ," + LCm);
-            //sw.WriteLine("HIGH Clock Count : ," + HCnt);
-            //sw.WriteLine("HIGH Depth(cm) : ," + HCm);
 
             foreach(var it in save_Data)
             {
@@ -285,19 +288,21 @@ namespace ArduinoSerialComm
             {
                 it.Clear();
             }
-            tb_Receive.Clear();
+            //tb_Receive.Clear();
         }
 
         private void sendClientMSG(string str)
         {
-            handleClient.dict_hClient[rg_ClientLIst.Properties.Items[rg_ClientLIst.SelectedIndex].Description].sendMSG(str);
+            //handleClient.dict_hClient[rg_ClientLIst.Properties.Items[rg_ClientLIst.SelectedIndex].Description].sendMSG(str);
+            handleClient.dict_hClient[uC_NetworkMsgPage1.now_SelID].sendMSG(str);
         }
 
         private void sendClientMSG(string[] str)
         {
             foreach(var it in str)
             {
-                handleClient.dict_hClient[rg_ClientLIst.Properties.Items[rg_ClientLIst.SelectedIndex].Description].sendMSG(it);
+                //handleClient.dict_hClient[rg_ClientLIst.Properties.Items[rg_ClientLIst.SelectedIndex].Description].sendMSG(it);
+                handleClient.dict_hClient[uC_NetworkMsgPage1.now_SelID].sendMSG(it);
             }
         }
 

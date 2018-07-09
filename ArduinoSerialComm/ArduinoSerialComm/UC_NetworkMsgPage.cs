@@ -16,6 +16,8 @@ namespace ArduinoSerialComm
 {
     public partial class UC_NetworkMsgPage : UserControl
     {
+        public string now_SelID { get { return rg_ClientLIst.Properties.Items[rg_ClientLIst.SelectedIndex].Description; } }
+
         public UC_NetworkMsgPage()
         {
             InitializeComponent();
@@ -23,25 +25,43 @@ namespace ArduinoSerialComm
             tc_NetworkMsg.ClosePageButtonShowMode = DevExpress.XtraTab.ClosePageButtonShowMode.InAllTabPageHeaders;
             tc_NetworkMsg.CloseButtonClick += Tc_NetworkMsg_CloseButtonClick;
 
+            rg_ClientLIst.SelectedIndexChanged += Rg_ClientLIst_SelectedIndexChanged;
             rg_ClientLIst.MouseClick += Rg_ClientLIst_MouseClick;
-
-            AddChannel("1234");
-            AddChannel("5678");
-            AddChannel("3457");
-            AddChannel("6789");
-            AddChannel("1020");
+            rtb_CalMsg.TextChanged += Rtb_TextChanged;
+//             AddChannel("1234");
+//             AddChannel("5678");
+//             AddChannel("3457");
+//             AddChannel("6789");
+//             AddChannel("1020");
         }
 
-        private void DisplayMsg(DataSet ds)
+        private void Rg_ClientLIst_SelectedIndexChanged(object sender, EventArgs e)
         {
-            string temp_id = ds.Pos.ToString();
-            if (dict_tp.ContainsKey(temp_id))
+            rtb_CalMsg.Clear();
+        }
+
+        public void DisplayMsg(object obj)
+        {
+            if(obj is DataSet)
             {
-                if(dict_tp[temp_id].Controls["rtb_" + temp_id] is RichTextBox)
+                var ds = (obj as DataSet);
+
+                string temp_id = ds.Pos.ToString();
+                if (dict_tp.ContainsKey(temp_id))
                 {
-                    var rTextBox = (dict_tp[temp_id].Controls["rtb_" + temp_id] as RichTextBox);
-                    rTextBox.AppendText(ds.FullData + "\n");
+                    if (dict_tp[temp_id].Controls["rtb_" + temp_id] is RichTextBox)
+                    {
+                        var rTextBox = (dict_tp[temp_id].Controls["rtb_" + temp_id] as RichTextBox);
+
+                        rTextBox.AppendText(ds.FullData + "\n");
+                    }
                 }
+            }
+            else if(obj is string)
+            {
+                var str = (obj as string);
+
+                rtb_CalMsg.AppendText(str);
             }
         }
 
@@ -93,6 +113,7 @@ namespace ArduinoSerialComm
             var rtb = new RichTextBox();
             rtb.Dock = DockStyle.Fill;
             rtb.Name = "rtb_" + id;
+            rtb.TextChanged += Rtb_TextChanged;
 
             var tp = new XtraTabPage();
             tp.Text = id;
@@ -101,6 +122,17 @@ namespace ArduinoSerialComm
             dict_tp.Add(id, tp);
 
             tc_NetworkMsg.TabPages.Add(tp);
+        }
+
+        private void Rtb_TextChanged(object sender, EventArgs e)
+        {
+            if(sender is RichTextBox)
+            {
+                var rtb = sender as RichTextBox;
+
+                rtb.SelectionStart = rtb.Text.Length;
+                rtb.ScrollToCaret();
+            }
         }
 
         private void Tc_NetworkMsg_CloseButtonClick(object sender, EventArgs e)
@@ -114,6 +146,9 @@ namespace ArduinoSerialComm
 //             DataSet temp_ds = new DataSet("20180705005959100.001234");
             DataSet temp_ds = new DataSet("20180705005959100.00" + rg_ClientLIst.Properties.Items[rg_ClientLIst.SelectedIndex].Description);
             DisplayMsg(temp_ds);
+
+            string temp_str = "[Calibration Msg]\n";
+            DisplayMsg(temp_str);
         }
     }
 }
