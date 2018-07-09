@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using DevExpress.XtraEditors.Controls;
 using DevExpress.XtraTab;
 using DevExpress.XtraTab.ViewInfo;
+using DevExpress.XtraEditors.ViewInfo;
 
 namespace ArduinoSerialComm
 {
@@ -22,38 +23,51 @@ namespace ArduinoSerialComm
             tc_NetworkMsg.ClosePageButtonShowMode = DevExpress.XtraTab.ClosePageButtonShowMode.InAllTabPageHeaders;
             tc_NetworkMsg.CloseButtonClick += Tc_NetworkMsg_CloseButtonClick;
 
-            //rg_ClientLIst.Click += Rg_ClientLIst_Click;
-            //rg_ClientLIst.MouseClick += Rg_ClientLIst_MouseC lick;
-            rg_ClientLIst.MouseUp += Rg_ClientLIst_MouseUp;
-            rg_ClientLIst.MouseCaptureChanged += Rg_ClientLIst_MouseCaptureChanged;
+            rg_ClientLIst.MouseClick += Rg_ClientLIst_MouseClick;
 
             AddChannel("1234");
             AddChannel("5678");
+            AddChannel("3457");
+            AddChannel("6789");
+            AddChannel("1020");
         }
 
-        private void Rg_ClientLIst_MouseCaptureChanged(object sender, EventArgs e)
+        private void DisplayMsg(DataSet ds)
         {
-        }
-
-        private void Rg_ClientLIst_MouseUp(object sender, MouseEventArgs e)
-        {
-            int temp_idx = (sender as DevExpress.XtraEditors.RadioGroup).SelectedIndex;
-            string temp_des = (sender as DevExpress.XtraEditors.RadioGroup).Properties.Items[temp_idx].Description;
-
-            if (dict_tp.ContainsKey(temp_des))
+            string temp_id = ds.Pos.ToString();
+            if (dict_tp.ContainsKey(temp_id))
             {
-                dict_tp[temp_des].PageVisible = true;
+                if(dict_tp[temp_id].Controls["rtb_" + temp_id] is RichTextBox)
+                {
+                    var rTextBox = (dict_tp[temp_id].Controls["rtb_" + temp_id] as RichTextBox);
+                    rTextBox.AppendText(ds.FullData + "\n");
+                }
             }
         }
 
         private void Rg_ClientLIst_MouseClick(object sender, MouseEventArgs e)
         {
-            int temp_idx = (sender as DevExpress.XtraEditors.RadioGroup).SelectedIndex;
-            string temp_des = (sender as DevExpress.XtraEditors.RadioGroup).Properties.Items[temp_idx].Description;
+            if (e.Button != MouseButtons.Right) return;
 
-            if (dict_tp.ContainsKey(temp_des))
+            var temp = (sender as DevExpress.XtraEditors.RadioGroup);
+
+            RadioGroupViewInfo cInfo = (RadioGroupViewInfo)temp.GetViewInfo();
+
+            for(int i = 0; i < temp.Properties.Items.Count; i++)
             {
-                dict_tp[temp_des].PageVisible = true;
+                Rectangle rC = ((RadioGroupItemViewInfo)cInfo.ItemsInfo[i]).CaptionRect;
+                Rectangle rG = ((RadioGroupItemViewInfo)cInfo.ItemsInfo[i]).GlyphRect;
+
+                if (rC.Contains(e.Location) || rG.Contains(e.Location))
+                {
+                    string temp_des = temp.Properties.Items[i].Description;
+
+                    if (dict_tp.ContainsKey(temp_des))
+                    {
+                        dict_tp[temp_des].PageVisible = true;
+                    }
+                    break;
+                }
             }
         }
 
@@ -78,6 +92,7 @@ namespace ArduinoSerialComm
 
             var rtb = new RichTextBox();
             rtb.Dock = DockStyle.Fill;
+            rtb.Name = "rtb_" + id;
 
             var tp = new XtraTabPage();
             tp.Text = id;
@@ -92,6 +107,13 @@ namespace ArduinoSerialComm
         {
             ClosePageButtonEventArgs arg = e as ClosePageButtonEventArgs;
             (arg.Page as XtraTabPage).PageVisible = false;
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+//             DataSet temp_ds = new DataSet("20180705005959100.001234");
+            DataSet temp_ds = new DataSet("20180705005959100.00" + rg_ClientLIst.Properties.Items[rg_ClientLIst.SelectedIndex].Description);
+            DisplayMsg(temp_ds);
         }
     }
 }

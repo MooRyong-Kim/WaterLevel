@@ -185,64 +185,69 @@ namespace ArduinoSerialComm
                 }
                 else return;
 
-                if ("" != str)
+                Display_String(str);
+            }
+        }
+
+        private void Display_String(string str)
+        {
+            if ("" != str)
+            {
+                DataSet ds = null;
+                if (DataSet.TryParse(str, out ds))
                 {
-                        DataSet ds = null;
-                        if (DataSet.TryParse(str, out ds))
-                        {
-                            tb_Receive.Invoke(new MethodInvoker(delegate()
-                            {
-                                string id = ds.Pos.ToString();
-                                if (dict_ReceiveData.ContainsKey(id))
-                                {
-                                    dict_ReceiveData[id].Add(new Record(ds, ds.WLev));
-                                    if (50 < dict_ReceiveData[id].Count)
-                                    {
-                                        dict_ReceiveData[id].RemoveAt(0);
-                                    }
-
-                                    tb_Receive.AppendText("- " + ds.FullData + "\r\n");
-                                }
-                                else
-                                {
-                                    BindingList<Record> bList_Record = new BindingList<Record>();
-                                    dict_ReceiveData.Add(id, bList_Record);
-                                    setSeries(id, bList_Record);
-
-                                    var rbtn = new RadioGroupItem();
-                                    rbtn.Description = id;
-
-                                    rg_ClientLIst.Properties.Items.Add(rbtn);
-                                }
-
-                                string str_ID = rg_ClientLIst.Properties.Items[rg_ClientLIst.SelectedIndex].Description;
-                                if (!temp_rflag && record_flag)
-                                {
-                                    ds_list = new List<DataSet>();
-                                }
-
-                                if(record_flag && ds.Pos.ToString() == str_ID)
-                                {
-                                    ds_list.Add(ds);
-                                }
-
-                                if(temp_rflag && !record_flag)
-                                {
-                                    save_CSV(str_ID, ds_list);
-                                    ds_list.Clear();
-                                    ds_list = null;
-                                }
-
-                                temp_rflag = record_flag;
-                            }));
-                    }
-                    else
+                    tb_Receive.Invoke(new MethodInvoker(delegate ()
                     {
-                        tb_Receive.Invoke(new MethodInvoker(delegate()
+                        string id = ds.Pos.ToString();
+                        if (dict_ReceiveData.ContainsKey(id))
                         {
-                            tb_Receive.AppendText(str + "\r\n");
-                        }));
-                    }
+                            dict_ReceiveData[id].Add(new Record(ds, ds.WLev));
+                            if (50 < dict_ReceiveData[id].Count)
+                            {
+                                dict_ReceiveData[id].RemoveAt(0);
+                            }
+
+                            tb_Receive.AppendText("- " + ds.FullData + "\r\n");
+                        }
+                        else
+                        {
+                            BindingList<Record> bList_Record = new BindingList<Record>();
+                            dict_ReceiveData.Add(id, bList_Record);
+                            setSeries(id, bList_Record);
+
+                            var rbtn = new RadioGroupItem();
+                            rbtn.Description = id;
+
+                            rg_ClientLIst.Properties.Items.Add(rbtn);
+                        }
+
+                        string str_ID = rg_ClientLIst.Properties.Items[rg_ClientLIst.SelectedIndex].Description;
+                        if (!temp_rflag && record_flag)
+                        {
+                            ds_list = new List<DataSet>();
+                        }
+
+                        if (record_flag && ds.Pos.ToString() == str_ID)
+                        {
+                            ds_list.Add(ds);
+                        }
+
+                        if (temp_rflag && !record_flag)
+                        {
+                            save_CSV(str_ID, ds_list);
+                            ds_list.Clear();
+                            ds_list = null;
+                        }
+
+                        temp_rflag = record_flag;
+                    }));
+                }
+                else
+                {
+                    tb_Receive.Invoke(new MethodInvoker(delegate ()
+                    {
+                        tb_Receive.AppendText(str + "\r\n");
+                    }));
                 }
             }
         }
